@@ -1,0 +1,56 @@
+general {
+	output_format = "i3bar"
+
+	colors = true
+	color_good =     "#859900"
+	color_degraded = "#CB4B16"
+	color_bad =      "#DC322F"
+
+	interval = 5
+}
+
+order += "volume master"
+order += "path_exists VPN"
+order += "wireless _first_"
+order += "battery 0"
+order += "tztime local"
+order += "tztime new_york"
+
+volume master {
+	format = " %volume"
+	format_muted = " %volume"
+	device = "default"
+	mixer = "Master"
+	mixer_idx = 0
+}
+
+wireless _first_ {
+	format_up = " %quality (%essid, %bitrate)"
+	format_down = " "
+}
+
+battery 0 {
+	format = "%status %percentage (%remaining)"
+	format_down = ""
+	status_chr = ""
+	status_bat = ""
+	status_full = ""
+	path = "/sys/class/power_supply/BAT%d/uevent"
+	low_threshold = 15
+	hide_seconds = true
+	integer_battery_capacity = true
+}
+
+path_exists VPN {
+	# path exists when a VPN tunnel launched by nmcli/nm-applet is active
+	path = "/proc/sys/net/ipv4/conf/tun0"
+}
+
+tztime local {
+	format = "%Y-%m-%d %H:%M:%S"
+}
+
+tztime new_york {
+	format = "(NY: %H:%M:%S)"
+	timezone = "America/New_York"
+}

@@ -1,0 +1,20 @@
+[user]
+	email = TalAmuyal@gmail.com
+	name = Tal Amuyal
+[alias]
+	co = checkout
+	st = status
+	amend = commit --amend --no-edit
+[core]
+	pager = less -x1,5
+	editor = nvim
+[diff]
+	tool = vimdiff
+[merge]
+	tool = vimdiff
+[mergetool]
+	path = nvim
+[push]
+	default = current
+[grep]
+	lineNumber = true

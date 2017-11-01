@@ -1,0 +1,141 @@
+# History file
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+
+# Auto 'cd'
+setopt autocd
+
+# TODO: Verify meaning
+setopt nomatch
+unsetopt extendedglob notify
+
+# Use Vim keybindings
+bindkey -v
+
+# Bind Ctrl+R to history search
+bindkey '^R' history-incremental-search-backward
+
+# Load prompt theme system
+autoload -Uz promptinit
+promptinit
+
+# === Customize prompt ===
+# Turn on parameter expansion on prompt
+setopt PROMPT_SUBST
+
+function get_custom_path {
+	p=$(pwd)
+	if [[ "$p" == "/home/tala" ]] ; then
+		p="Home"
+	elif [[ "$p" == "/home/tala/workspace" ]] ; then
+		p="Workspace"
+	elif [[ "$p" == "/home/tala/workspace/Direct" ]] ; then
+		p="Direct"
+	elif [[ $p == /home/tala/workspace/Direct/* ]] ; then
+		prefix="/home/tala/workspace/Direct/"
+		p=${p:28}
+	elif [[ $p == /home/tala/workspace/* ]] ; then
+		prefix="/home/tala/workspace/"
+		p=${p:21}
+	fi
+
+	echo -n $p
+}
+
+#function prompt_time {
+#	date +"%T" | tr -d '\n'
+#}
+
+function prompt_git {
+	git branch >/dev/null 2>/dev/null
+	if [[ $? -eq 0 ]];then
+		git rev-parse --abbrev-ref HEAD | tr -d '\n'
+	else
+		echo -n '(None)'
+	fi
+}
+
+function prompt_path {
+	echo -n '%~'
+}
+
+function prompt_start {
+	echo -n '%K{blue}%F{white} '
+}
+
+function prompt_seperate {
+	# $1 = Old BG color
+	# $2 = New BG color
+	# $3 = New text color
+	#echo -n ' %f%k%F{'$1'}%K{'$2'}\u25B6 %f%F{'$3'}'
+	echo -n ' %f%k%K{'$2'}%f%F{'$3'} '
+}
+
+function prompt_terminate {
+	echo -n ' %f%k'
+}
+
+function set_tmux_title {
+	printf "\033k$1\033\\"
+}
+
+function set_window_title {
+	echo -en "\e]0;$1\a" # Set icon name and window title
+}
+
+function prompt_left {
+	custom_path=$(get_custom_path)
+
+	#set_tmux_title "$custom_path"
+	set_window_title "$custom_path"
+
+	prompt_start
+	#echo -n $'\u2605'
+	prompt_git
+	prompt_seperate blue green white
+	echo -n $custom_path
+	#prompt_path
+	#prompt_seperate green yellow black
+	#prompt_seperate yellow blue white
+	#prompt_time
+	prompt_terminate
+
+	echo -n $' > '
+}
+
+function prompt_right {
+#	prompt_start
+#	prompt_git
+#	prompt_terminate
+}
+
+PROMPT='$(prompt_left)'
+RPROMPT='$(prompt_right)'
+# === ===
+
+# Command completion
+autoload -Uz compinit
+compinit
+
+# Alias
+alias ls='ls --color=auto'
+alias ll="ls -lAFhtr --color"
+alias grep='grep --color=auto'
+alias gg="git grep"
+alias vim="nvim"
+
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
+# -F - Causes less to automatically exit if the entire file can be displayed on the first screen
+# -X - Disables sending the termcap initialization and deinitialization strings to the terminal (stops less clearing the screen)
+# -R - Accept escape sequences (like colors)
+#export LESS="-RFX"
+
+export VISUAL=nvim
+export EDITOR="$VISUAL"
+
+export PATH=$PATH:~/.npm-global/bin:~/.local/bin
