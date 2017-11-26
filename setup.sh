@@ -28,7 +28,7 @@ title "Upgrading installed packages"
 sudo apt upgrade --assume-yes
 
 title "Installing new packages"
-sudo apt install --assume-yes git feh zsh tmux scrot python3 i3 pinta pavucontrol curl rxvt-unicode blueman
+sudo apt install --assume-yes git zsh tmux scrot python3 i3 pinta pavucontrol curl rxvt-unicode blueman
 
 if ! hash node 2>/dev/null; then
 	title "Installing NodeJS"

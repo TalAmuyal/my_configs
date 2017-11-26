@@ -165,6 +165,6 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightne
 # Lock screen
 bindsym Mod1+Control+l exec ~/.config/i3/my-lockscreen.sh ~/.config/i3/lockscreen-center.png
 
-exec_always bash ~/.config/i3/set-background.sh
+exec_always --no-startup-id xsetroot -solid "#073642"
 
 exec $reconfigureDisplays
