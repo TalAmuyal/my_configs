@@ -50,7 +50,6 @@ linkItem "i3wm's status-bar"                          ~/.config/i3/i3status.conf
 linkItem "Custom status script for i3wm's status-bar" ~/.config/i3/my-status.sh          "dotfiles/my-i3status-script.sh"
 linkItem "Custom status script for i3wm's status-bar" ~/.config/i3/my-status.py          "dotfiles/my-i3status-script.py"
 linkItem "Custom lock-screen script for i3wm"         ~/.config/i3/my-lockscreen.sh      "scripts/my-i3-lockscreen.sh"
-linkItem "Custom background script for i3wm"          ~/.config/i3/set-background.sh     "scripts/set-i3-background.sh"
 linkItem "Custom lock-screen image for i3wm"          ~/.config/i3/lockscreen-center.png "pictures/lockscreen-center.png"
 linkItem "tmux configuration"                         ~/.config/tmux/config              "dotfiles/tmux.conf"
 #linkItem "Hyper.app configuration"                    ~/.hyper.js                        "dotfiles/hyper.js"
