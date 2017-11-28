@@ -14,7 +14,7 @@ order += "path_exists VPN"
 order += "wireless _first_"
 order += "battery 0"
 order += "tztime local"
-order += "tztime new_york"
+#order += "tztime new_york"
 
 volume master {
 	format = " %volume"
