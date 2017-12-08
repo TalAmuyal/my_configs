@@ -1,12 +1,13 @@
 const activate = (oni) => {
-    oni.input.unbind("<Tab>")
-    oni.input.unbind("<c-p>")
+    oni.input.unbind("<tab>")
     oni.input.unbind("<f3>")
+    oni.input.unbind("<f4>")
+    oni.input.unbind("<f5>")
     oni.input.unbind("<f12>")
 
-    oni.input.bind("<Tab>", "completion.next")
-    oni.input.bind("<S-Tab>", "completion.previous")
-    oni.input.bind("<CR>", "completion.complete")
+    oni.input.bind("<enter>", "contextMenu.select")
+    oni.input.bind("<tab>", "contextMenu.next")
+    oni.input.bind("<S-Tab>", "contextMenu.previous")
 
     oni.input.bind("<f3>", "oni.editor.gotoDefinition")
     oni.input.bind("<f4>", "oni.editor.findAllReferences")
@@ -19,9 +20,8 @@ module.exports = {
     "oni.loadInitVim": true,
     "editor.fontSize": "14px",
     "editor.fontFamily": "Fira code",
-    "editor.completions.enabled": true,
     "oni.hideMenu": true,
-    "tabs.enabled": false,
-    "tabs.showVimTabs": false
+    "tabs.mode": "hidden",
+    "ui.colorscheme": "solarized"
 }
 
