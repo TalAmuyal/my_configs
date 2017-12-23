@@ -70,6 +70,9 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
+" Exit terminal mode
+tnoremap kj <C-\><C-n>
+
 " Always use vertical diffs
 set diffopt+=vertical
 
