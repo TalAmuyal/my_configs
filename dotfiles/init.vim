@@ -17,6 +17,7 @@ Plug 'wellle/targets.vim'
 Plug 'mhinz/vim-grepper'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'jreybert/vimagit'
+Plug 'sbdchd/neoformat'
 
 call plug#end()
 
