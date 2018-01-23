@@ -21,6 +21,16 @@ linkItem() {
 	fi
 }
 
+installTmuxPackageManager() {
+	tmuxPlugins=~/.local/tmux-plugins/tpm
+	if [[ ! -d $tmuxPlugins ]] ; then
+		listItem "Installing Tmux Plugin Manager"
+		git clone https://github.com/tmux-plugins/tpm $tmuxPlugins
+	fi
+}
+
+mkdir -p ~/.local/npm-global
+
 title "Updating packages cache"
 sudo apt update
 
@@ -56,5 +66,9 @@ linkItem "tmux configuration"                         ~/.config/tmux/config     
 linkItem "Urxvt configuration"                        ~/.Xdefaults                       "dotfiles/Xdefaults"
 linkItem "Git configuration"                          ~/.gitconfig                       "dotfiles/gitconfig"
 linkItem "Zsh configuration"                          ~/.zshrc                           "dotfiles/zshrc"
+linkItem "NPM configuration"                          ~/.npmrc                           "dotfiles/npmrc"
 linkItem "Oni configuration"                          ~/.oni/config.js                   "dotfiles/oni-config.js"
 linkItem "NeoVim configuration"                       ~/.config/nvim/init.vim            "dotfiles/init.vim"
+
+title "Post-settings actions"
+installTmuxPackageManager

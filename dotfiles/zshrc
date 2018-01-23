@@ -138,4 +138,4 @@ export LANGUAGE=en_US.UTF-8
 export VISUAL=nvim
 export EDITOR="$VISUAL"
 
-export PATH=$PATH:~/.npm-global/bin:~/.local/bin
+export PATH=$PATH:~/.local/npm-global/bin:~/.local/bin
