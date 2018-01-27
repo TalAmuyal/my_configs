@@ -27,7 +27,7 @@ if exists("g:gui_oni")
     " Turn off statusbar, because it is externalized
     set noshowmode
     set noruler
-    set laststatus=0
+    "set laststatus=0 <- Uncommnet when Oni handles splits correctly
     set noshowcmd
 
     " Enable GUI mouse behavior
