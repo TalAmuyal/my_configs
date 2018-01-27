@@ -83,7 +83,7 @@ set spell spelllang=en_us
 highlight SpellBad ctermbg=001 ctermfg=007
 
 " White-list YCM configuration files
-let g:ycm_extra_conf_globlist = ['~/workspace/*']
+"let g:ycm_extra_conf_globlist = ['~/workspace/*']
 
 syntax enable
 colorscheme NeoSolarized
