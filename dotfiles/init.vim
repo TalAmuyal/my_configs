@@ -18,6 +18,8 @@ Plug 'mhinz/vim-grepper'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'jreybert/vimagit'
 Plug 'sbdchd/neoformat'
+Plug 'danro/rename.vim'
+Plug 'nvie/vim-flake8'
 
 call plug#end()
 
@@ -71,6 +73,9 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
+" Control-T for new tab
+nnoremap <C-t> :tabnew<CR>
+
 " Exit terminal mode
 tnoremap kj <C-\><C-n>
 
@@ -84,6 +89,9 @@ highlight SpellBad ctermbg=001 ctermfg=007
 
 " White-list YCM configuration files
 "let g:ycm_extra_conf_globlist = ['~/workspace/*']
+
+" Remove compiled Python files form auto-complete
+set wildignore+=*.pyc
 
 syntax enable
 colorscheme NeoSolarized
