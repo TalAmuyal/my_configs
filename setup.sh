@@ -43,7 +43,7 @@ else
 	sudo apt upgrade --assume-yes
 fi
 
-title "Installing new packages"
+title "Installing OS packages"
 if `isOsx` ; then
 	brew install python3 node yarn tmux neovim
 else
@@ -62,6 +62,9 @@ else
 		sudo mv nvim.appimage /usr/bin/nvim
 	fi
 fi
+
+title "Installing Python packages"
+pip install -U python-language-server pyls-mypy
 
 title "Setting symlinks"
 linkItem "Fonts directory"                            ~/.fonts                           "fonts"
