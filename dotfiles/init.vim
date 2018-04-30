@@ -19,6 +19,8 @@ Plug 'jreybert/vimagit'
 Plug 'sbdchd/neoformat'
 Plug 'danro/rename.vim'
 Plug 'nvie/vim-flake8'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive'
 call plug#end()
 
 
@@ -33,6 +35,9 @@ if exists("g:gui_oni")
     " Enable GUI mouse behavior
     set mouse=a
 endif
+
+" Set yanking and putting to work with the systems clipboard
+set clipboard+=unnamedplus
 
 " copy indent from previous line: useful when using tabs for indentation and
 " spaces for alignment
@@ -60,14 +65,18 @@ set splitright
 " Display white-spaces
 set list listchars=tab:»·,trail:·,nbsp:·
 
-" Disable arrow keys in normal mode
+" Disable arrow keys in normal mode - helps getting used to better movement
+" keys
 nnoremap <Left>  :echoe "Use h"<CR>
 nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up>    :echoe "Use k"<CR>
 nnoremap <Down>  :echoe "Use j"<CR>
 
-" Set yanking and putting to work with the systems clipboard
-set clipboard+=unnamedplus
+nnoremap <C-a> ggVG
+
+" Quicker tab movement
+nnoremap <A-¬> gt
+nnoremap <A-l> gT
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
