@@ -1,53 +1,67 @@
 const activate = (oni) => {
-    oni.input.unbind("<tab>")
-    oni.input.unbind("<f3>")
-    oni.input.unbind("<f4>")
-    oni.input.unbind("<f5>")
-    oni.input.unbind("<f12>")
+  // Free-up default bindings
+  oni.input.unbind("<tab>")
+  oni.input.unbind("<f4>")
+  oni.input.unbind("<f5>")
 
-    oni.input.bind("<enter>", "contextMenu.select")
-    oni.input.bind("<tab>", "contextMenu.next")
-    oni.input.bind("<S-Tab>", "contextMenu.previous")
+  // Re-bind menu controls (like auto-completion)
+  oni.input.bind("<enter>", "contextMenu.select")
+  oni.input.bind("<tab>", "contextMenu.next")
+  oni.input.bind("<S-Tab>", "contextMenu.previous")
 
-    oni.input.bind("<f3>", "oni.editor.gotoDefinition")
-    oni.input.bind("<f4>", "oni.editor.findAllReferences")
-    oni.input.bind("<f5>", "language.formatter.formatDocument")
-
-    oni.input.bind("<f8>", "markdown.togglePreview")
-    oni.input.bind("<f9>", "sidebar.toggle")
+  // Re-bind other specific functions
+  oni.input.bind("<f4>", "oni.editor.findAllReferences")
+  oni.input.bind("<f5>", "language.formatter.formatDocument")
+  oni.input.bind("<f8>", "markdown.togglePreview")
+  oni.input.bind("<f9>", "sidebar.toggle")
 };
 
 module.exports = {
-    activate,
+  activate, // A must for the above configs to be applied
 
-    "autoClosingPairs.default": [
-        { open: "{", close: "}" },
-        { open: "[", close: "]" },
-        { open: "(", close: ")" },
-        { open: '"', close: '"' },
-        { open: '\'', close: '\'' },
-        { open: '`', close: '`' },
-        { open: '<', close: '>' },
-    ],
+  // Currently not functional, but when it will be, I want to update manually so I could update the configs to my liking
+  "autoUpdate.enabled": false,
 
-    "oni.useDefaultConfig": false,
-    "oni.loadInitVim": true,
-    "editor.fontSize": "14px",
-    "editor.fontFamily": "Fira code",
-    "oni.hideMenu": true,
-    "tabs.mode": "tabs",
-    "tabs.showIndex": true,
-    "ui.colorscheme": "solarized",
-    "sidebar.plugins.enabled": true,
-    "sidebar.enabled": true,
-    "editor.split.mode": "oni",
+  // Don't use since it is geared towards Vim newbies
+  "oni.useDefaultConfig": false,
 
-    /* Experimental features */
-    "experimental.markdownPreview.enabled": true,
-    "experimental.commandline.mode": true,
-    "experimental.commandline.icons": true,
+  // Do use my own Vim configs
+  "oni.loadInitVim": true,
 
-    "experimental.wildmenu.mode": true,
-    "experimental.welcome.enabled": false,
+  "autoClosingPairs.default": [
+    { open: "{", close: "}" },
+    { open: "[", close: "]" },
+    { open: "(", close: ")" },
+    { open: '"', close: '"' },
+    { open: '\'', close: '\'' },
+    { open: '`', close: '`' },
+    { open: '<', close: '>' },
+  ],
+
+  // Minimalism
+  "editor.maximizeScreenOnStart": true, // Part of my minimalizm mantra
+  "oni.hideMenu": true, // Save up space
+  // "sidebar.enabled": false, // On for me since I prefer the pretty GUI
+  "tabs.height": "2.1em", // A bit smaller then the default
+
+  //Completly subjective and personal pereference
+  "editor.fontSize": "14px",
+  "editor.fontFamily": "Fira code", // Recommended: A fornt with ligatures
+  "ui.colorscheme": "solarized", // Personal preference
+  "terminal.shellCommand": "zsh",
+
+  // Pretty GUI
+  "tabs.mode": "tabs", // For those who like window-tabs (like in FireFox and Chrome)
+  "sidebar.plugins.enabled": true,
+
+  "language.java.languageServer" : {
+    command: "java-lsp",
+  },
+  "language.clojure.languageServer" : {
+    command: "clojure-lsp",
+  },
+
+  /* Experimental features */
+  "experimental.markdownPreview.enabled": true,
 }
 
