@@ -10,8 +10,6 @@ const activate = (oni) => {
   oni.input.bind("<S-Tab>", "contextMenu.previous")
 
   // Re-bind other specific functions
-  oni.input.bind("<f4>", "oni.editor.findAllReferences")
-  oni.input.bind("<f5>", "language.formatter.formatDocument")
   oni.input.bind("<f8>", "markdown.togglePreview")
   oni.input.bind("<f9>", "sidebar.toggle")
 };
@@ -32,20 +30,20 @@ module.exports = {
     { open: "{", close: "}" },
     { open: "[", close: "]" },
     { open: "(", close: ")" },
-    { open: '"', close: '"' },
-    { open: '\'', close: '\'' },
+    //{ open: '"', close: '"' }, Interrupts with Pythgon's triple quote
+    { open: "'", close: "'" },
     { open: '`', close: '`' },
-    { open: '<', close: '>' },
   ],
 
   // Minimalism
   "editor.maximizeScreenOnStart": true, // Part of my minimalizm mantra
   "oni.hideMenu": true, // Save up space
   // "sidebar.enabled": false, // On for me since I prefer the pretty GUI
-  "tabs.height": "2.1em", // A bit smaller then the default
+  "sidebar.default.open": false, // Start closed
+  "tabs.height": "2.1em", // A bit smaller than the default
 
   //Completly subjective and personal pereference
-  "editor.fontSize": "14px",
+  "editor.fontSize": "13px",
   "editor.fontFamily": "Fira code", // Recommended: A fornt with ligatures
   "ui.colorscheme": "solarized", // Personal preference
   "terminal.shellCommand": "zsh",
@@ -62,6 +60,9 @@ module.exports = {
   },
 
   /* Experimental features */
+  "editor.quickInfo.delay": 100,
+  "sidebar.marks.enabled": true,
   "experimental.markdownPreview.enabled": true,
+  // "editor.split.mode": "oni",
 }
 
