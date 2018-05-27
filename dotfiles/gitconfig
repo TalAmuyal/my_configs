@@ -1,6 +1,8 @@
 [user]
-	email = TalAmuyal@gmail.com
 	name = Tal Amuyal
+	email = TalAmuyal@gmail.com
+[includeIf "gitdir:~/dev/"]
+	path = ~/dev/.gitconfig
 [alias]
 	co = checkout
 	st = status
@@ -9,6 +11,7 @@
 [core]
 	pager = less -x1,5
 	editor = nvim
+	excludesfile = ~/.gitignore
 [diff]
 	tool = vimdiff
 [merge]

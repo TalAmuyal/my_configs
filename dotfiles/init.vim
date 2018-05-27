@@ -72,8 +72,6 @@ nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up>    :echoe "Use k"<CR>
 nnoremap <Down>  :echoe "Use j"<CR>
 
-nnoremap <C-a> ggVG
-
 " Quicker tab movement
 nnoremap <A-¬> gt
 nnoremap <A-l> gT
@@ -85,13 +83,16 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
 " Control-T for new tab
-nnoremap <C-t> :tabnew<CR>
+nnoremap <C-T> :tabnew<CR>
+
+" Control-Shift-T for new terminal tab
+nnoremap <S-T> :tabnew<CR>:terminal<CR>A
 
 " Re-bind <C-f> for searching with grep (<C-d> is used for scrolling)
 nnoremap <C-f> :GrepperGit 
 
 " Exit terminal mode
-tnoremap kj <C-\><C-n>
+tnoremap hj <C-\><C-n>
 
 " Always use vertical diffs
 set diffopt+=vertical

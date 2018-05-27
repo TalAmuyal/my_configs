@@ -1,0 +1,4 @@
+.ropeproject
+.mypy_cache
+.DS_Store
+*.pyc
