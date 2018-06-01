@@ -12,7 +12,7 @@ setopt nomatch
 unsetopt extendedglob notify
 
 # Use Vim keybindings
-bindkey -v
+# bindkey -v - Not needed anymove since I run my shell inside Neovim
 
 # Bind Ctrl+R to history search
 bindkey '^R' history-incremental-search-backward
