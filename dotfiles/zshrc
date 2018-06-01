@@ -26,27 +26,24 @@ promptinit
 setopt PROMPT_SUBST
 
 function get_custom_path {
-	p=$(pwd)
-	if [[ "$p" == "/home/tala" ]] ; then
+	p="$(pwd -P)"
+	home="$(cd ~ && pwd -P)"
+	if [[ "$p" == "$home" ]] ; then
 		p="Home"
-	elif [[ "$p" == "/home/tala/workspace" ]] ; then
+	elif [[ "$p" == "$home/dev" ]] ; then
+		p="Dev"
+	elif [[ $p == $home/dev/* ]] ; then
+		prefix="$home/dev/"
+		p=${p:${#prefix}}
+	elif [[ "$p" == "$home/workspace" ]] ; then
 		p="Workspace"
-	elif [[ "$p" == "/home/tala/workspace/Direct" ]] ; then
-		p="Direct"
-	elif [[ $p == /home/tala/workspace/Direct/* ]] ; then
-		prefix="/home/tala/workspace/Direct/"
-		p=${p:28}
-	elif [[ $p == /home/tala/workspace/* ]] ; then
-		prefix="/home/tala/workspace/"
-		p=${p:21}
+	elif [[ $p == $home/workspace/* ]] ; then
+		prefix="$home/workspace/"
+		p=${p:${#prefix}}
 	fi
 
 	echo -n $p
 }
-
-#function prompt_time {
-#	date +"%T" | tr -d '\n'
-#}
 
 function prompt_git {
 	git branch >/dev/null 2>/dev/null
@@ -88,18 +85,8 @@ function set_window_title {
 function prompt_left {
 	custom_path=$(get_custom_path)
 
-	#set_tmux_title "$custom_path"
-	set_window_title "$custom_path"
-
 	prompt_start
-	#echo -n $'\u2605'
-	prompt_git
-	prompt_seperate blue green white
 	echo -n $custom_path
-	#prompt_path
-	#prompt_seperate green yellow black
-	#prompt_seperate yellow blue white
-	#prompt_time
 	prompt_terminate
 
 	echo -n $' > '
@@ -112,7 +99,7 @@ function prompt_right {
 }
 
 PROMPT='$(prompt_left)'
-RPROMPT='$(prompt_right)'
+#RPROMPT='$(prompt_right)'
 # === ===
 
 # Command completion
