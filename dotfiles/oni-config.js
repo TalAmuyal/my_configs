@@ -1,17 +1,38 @@
 const activate = (oni) => {
+
+  const isMode = (mode) => {
+    isMenuOpen = oni.menu.isMenuOpen()
+    editorMode = oni.editors.activeEditor.mode
+    return (mode === "menu") ? isMenuOpen : (editorMode === mode)
+  }
+
+  const visualMode  = () => isMode("visual")
+  const normalMode  = () => isMode("normal")
+  const insertMode  = () => isMode("insert")
+  const commandMode = () => isMode("cmdline_normal")
+  const menuMode    = () => isMode("menu")
+
   // Free-up default bindings
   oni.input.unbind("<tab>")
-  oni.input.unbind("<f4>")
-  oni.input.unbind("<f5>")
 
   // Re-bind menu controls (like auto-completion)
   oni.input.bind("<enter>", "contextMenu.select")
-  oni.input.bind("<tab>", "contextMenu.next")
+  oni.input.bind("<tab>",   "contextMenu.next")
   oni.input.bind("<S-Tab>", "contextMenu.previous")
 
-  // Re-bind other specific functions
-  oni.input.bind("<f8>", "markdown.togglePreview")
-  oni.input.bind("<f9>", "sidebar.toggle")
+  // Panes
+  oni.input.bind("<f8>",    "markdown.togglePreview")
+  oni.input.bind("<f9>",    "sidebar.toggle")
+
+  // Command-line
+  oni.input.bind("<c-s-p>", "commands.show",          normalMode)
+  oni.input.bind("<c-v>",   "editor.clipboard.paste", commandMode)
+
+  // Quick-open
+  oni.input.bind("<c-p>", "quickOpen.show",               normalMode)
+  oni.input.bind("|",     "quickOpen.openFileVertical",   menuMode)
+  oni.input.bind("_",     "quickOpen.openFileHorizontal", menuMode)
+  oni.input.bind("<c-t>", "quickOpen.openFileNewTab",     menuMode)
 };
 
 module.exports = {
@@ -22,6 +43,9 @@ module.exports = {
 
   // Don't use since it is geared towards Vim newbies
   "oni.useDefaultConfig": false,
+
+  // Oni's clipboard-manager adds bugs and yields no benefits
+  "editor.clipboard.enabled": false,
 
   // Do use my own Vim configs
   "oni.loadInitVim": true,
@@ -63,6 +87,5 @@ module.exports = {
   "editor.quickInfo.delay": 100,
   "sidebar.marks.enabled": true,
   "experimental.markdownPreview.enabled": true,
-  // "editor.split.mode": "oni",
 }
 
