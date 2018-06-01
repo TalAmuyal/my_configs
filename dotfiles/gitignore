@@ -1,4 +1,5 @@
 .ropeproject
 .mypy_cache
+.pytest_cache
 .DS_Store
 *.pyc
