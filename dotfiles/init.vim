@@ -82,11 +82,19 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
-" Control-T for new tab
+" New tab: Control-T
 nnoremap <C-T> :tabnew<CR>
 
-" Control-Shift-T for new terminal tab
+" New terminal tab: Control-Shift-T
 nnoremap <S-T> :tabnew<CR>:terminal<CR>A
+
+" Vertical terminal split: Pipe ('|')
+tnoremap <bar> :vsp<CR>:terminal<CR>A
+nnoremap <bar> :vsp<CR>:terminal<CR>A
+
+" Horizontal terminal split: Underscore ('_')
+tnoremap _ :sp<CR>:terminal<CR>A
+nnoremap _ :sp<CR>:terminal<CR>A
 
 " Re-bind <C-f> for searching with grep (<C-d> is used for scrolling)
 nnoremap <C-f> :GrepperGit 
