@@ -106,23 +106,75 @@ PROMPT='$(prompt_left)'
 autoload -Uz compinit
 compinit
 
-# Alias
-alias ls='ls --color=auto'
-alias ll="ls -lAFhtr --color"
-alias grep='grep --color=auto'
-alias gg="git grep"
+function isOsx() {
+	[[ `uname` == "Darwin" ]]
+}
+
+isLinux() {
+	[[ `uname` == "Linux" ]]
+}
+
+function print_master_branch_name() {
+	git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+}
+
+# Aliases
 alias vim="nvim"
+if isOsx ; then
+	alias ll="ls -lAFhtr"
+else
+	alias ls='ls --color=auto'
+	alias ll="ls -lAFhtr --color"
+fi
+alias pyll='ll | egrep "(/|.py)$" | egrep -v " (\.|__)"'
+alias rrr='source ~/.zshrc'
+alias grep='grep --color=auto'
+alias gg='git grep'
+alias gfo='git fetch origin'
+alias gcom='git checkout origin/$(print_master_branch_name)'
+alias grc='git rebase --continue'
+alias gra='git rebase --abort'
+alias gcl='gfo && gcom'
+alias gsa='git stash'
+alias gsp='git stash pop'
+alias gpo='git push origin'
+alias gpof='gpo -f'
+alias grom='git rebase origin/$(print_master_branch_name)'
+alias grl='gfo && grom'
+alias grlp='grl && gpof'
+
+gri() {
+	git rebase -i "HEAD~$1"
+}
+gfc() {
+	title="${@:2}"
+	git feature create -p "R&D Board" "$title" && git pr "$1"
+}
+gs() {
+	title="${@:2}"
+	git commit -m "$title" && git feature create -p "R&D Board" "$title" && git pr "$1"
+}
+gff() {
+	git feature from "$2" && git pr "$1"
+}
+remenv() {
+	ssh -t -i ~/.ssh/forter_id nomenu@prod-rugatka.frdstr.com remove prod $1
+}
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 
-# -F - Causes less to automatically exit if the entire file can be displayed on the first screen
-# -X - Disables sending the termcap initialization and deinitialization strings to the terminal (stops less clearing the screen)
-# -R - Accept escape sequences (like colors)
-#export LESS="-RFX"
+if isLinux ; then
+	# -F - Causes less to automatically exit if the entire file can be displayed on the first screen
+	# -X - Disables sending the termcap initialization and deinitialization strings to the terminal (stops less clearing the screen)
+	# -R - Accept escape sequences (like colors)
+	export LESS="-RFX"
+fi
 
 export VISUAL=nvim
 export EDITOR="$VISUAL"
 
 export PATH=$PATH:~/.local/npm-global/bin:~/.local/bin
+export PATH="/usr/local/bin/:$PATH:$HOME/bin/"
+
