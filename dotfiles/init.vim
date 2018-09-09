@@ -24,6 +24,24 @@ Plug 'tpope/vim-fugitive'
 call plug#end()
 
 
+" Easy FS navigation commands
+:command Forter    cd ~/dev/forter
+:command Analytics cd ~/dev/forter/analytics/src
+:command Pybolt    cd ~/dev/pybolts-infra
+:command Velocity  cd ~/dev/velocity
+:command Storm     cd ~/dev/forter/storm
+:command Yasr      cd ~/dev/yasr
+
+:command Workspace cd ~/workspace
+:command Science   cd ~/science
+
+:command Config    cd ~/.local/MyConfigs
+
+" Easy Python term commands
+:command Ipython terminal ipython2
+:command Pytest  terminal pytest2
+
+
 " Oni-specific settings
 if exists("g:gui_oni")
     " Turn off statusbar, because it is externalized
@@ -67,14 +85,10 @@ set list listchars=tab:»·,trail:·,nbsp:·
 
 " Disable arrow keys in normal mode - helps getting used to better movement
 " keys
-nnoremap <Left>  :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
+nnoremap <Left>  gT
+nnoremap <Right> gt
 nnoremap <Up>    :echoe "Use k"<CR>
 nnoremap <Down>  :echoe "Use j"<CR>
-
-" Quicker tab movement
-nnoremap <A-¬> gt
-nnoremap <A-l> gT
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -89,12 +103,14 @@ nnoremap <C-T> :tabnew<CR>
 nnoremap <S-T> :tabnew<CR>:terminal<CR>A
 
 " Vertical terminal split: Pipe ('|')
-tnoremap <bar> :vsp<CR>:terminal<CR>A
 nnoremap <bar> :vsp<CR>:terminal<CR>A
+"tnoremap <bar> :vsp<CR>:terminal<CR>A
 
 " Horizontal terminal split: Underscore ('_')
-tnoremap _ :sp<CR>:terminal<CR>A
 nnoremap _ :sp<CR>:terminal<CR>A
+"tnoremap _ :sp<CR>:terminal<CR>A
+
+nnoremap <C-I> :tabnew<CR>:terminal ipython2<CR>A
 
 " Re-bind <C-f> for searching with grep (<C-d> is used for scrolling)
 nnoremap <C-f> :GrepperGit 
@@ -121,3 +137,4 @@ syntax enable
 " Set a custom color-scheme
 colorscheme NeoSolarized
 set background=dark
+
