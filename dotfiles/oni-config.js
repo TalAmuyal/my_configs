@@ -30,13 +30,22 @@ const activate = (oni) => {
 
   // Quick-open
   oni.input.bind("<c-p>", "quickOpen.show",               normalMode)
-  oni.input.bind("|",     "quickOpen.openFileVertical",   menuMode)
-  oni.input.bind("_",     "quickOpen.openFileHorizontal", menuMode)
+  oni.input.bind("<c-v>", "quickOpen.openFileVertical",   menuMode)
+  oni.input.bind("<c-h>", "quickOpen.openFileHorizontal", menuMode)
   oni.input.bind("<c-t>", "quickOpen.openFileNewTab",     menuMode)
+
+  oni.input.bind("<c-f>", "quickOpen.searchFileByContent", normalMode)
+  oni.input.bind("<c-f>", "quickOpen.setToQuickFix",       menuMode)
 };
 
 module.exports = {
   activate, // A must for the above configs to be applied
+
+  "oni.exclude": [
+    "node_modules",
+    ".git",
+    "__pycache__",
+  ],
 
   // Currently not functional, but when it will be, I want to update manually so I could update the configs to my liking
   "autoUpdate.enabled": false,
@@ -87,5 +96,8 @@ module.exports = {
   "editor.quickInfo.delay": 100,
   "sidebar.marks.enabled": true,
   "experimental.markdownPreview.enabled": true,
+  "experimental.vcs.blame.enabled": true,
+  "experimental.vcs.sidebar": true,
+  "experimental.vcs.blame.timeout": 0,
 }
 
