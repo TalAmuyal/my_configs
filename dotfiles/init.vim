@@ -25,12 +25,23 @@ call plug#end()
 
 
 " Easy FS navigation commands
-:command Forter    cd ~/dev/forter
-:command Analytics cd ~/dev/forter/analytics/src
-:command Pybolt    cd ~/dev/pybolts-infra
-:command Velocity  cd ~/dev/velocity
-:command Storm     cd ~/dev/forter/storm
-:command Yasr      cd ~/dev/yasr
+:command Forter     cd ~/dev/forter
+:command Analytics  cd ~/dev/forter/analytics/src
+:command Pybolt     cd ~/dev/pybolts-infra
+:command Velocity   cd ~/dev/velocity
+:command Storm      cd ~/dev/forter/storm
+:command Yasr       cd ~/dev/yasr
+:command Crons      cd ~/dev/crons
+:command Session    cd ~/dev/sessions_persistence
+:command Scripts    cd ~/dev/scripts
+:command Confetti   cd ~/dev/confetti
+:command Attribute  cd ~/dev/attributes-rerun
+:command Effectless cd ~/dev/effectless-tx-boss
+:command Backoffice cd ~/dev/backoffice
+:command Rugatka    cd ~/dev/rugatka
+
+:command Oni cd ~/workspace/oni/general
+
 
 :command Workspace cd ~/workspace
 :command Science   cd ~/science
