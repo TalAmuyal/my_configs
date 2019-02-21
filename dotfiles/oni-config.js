@@ -63,27 +63,25 @@ module.exports = {
     { open: "{", close: "}" },
     { open: "[", close: "]" },
     { open: "(", close: ")" },
-    //{ open: '"', close: '"' }, Interrupts with Pythgon's triple quote
+    //{ open: '"', close: '"' }, Interrupts with Python's triple quote
     { open: "'", close: "'" },
     { open: '`', close: '`' },
   ],
 
   // Minimalism
-  "editor.maximizeScreenOnStart": true, // Part of my minimalizm mantra
-  "oni.hideMenu": true, // Save up space
-  // "sidebar.enabled": false, // On for me since I prefer the pretty GUI
-  "sidebar.default.open": false, // Start closed
+  "editor.maximizeScreenOnStart": true, // Part of my minimalism mantra
+  "oni.hideMenu": 'hidden', // Save up space
+  "sidebar.enabled": false,
   "tabs.height": "2.1em", // A bit smaller than the default
 
-  //Completly subjective and personal pereference
-  "editor.fontSize": "13px",
-  "editor.fontFamily": "Fira code", // Recommended: A fornt with ligatures
-  "ui.colorscheme": "solarized", // Personal preference
+  // Completely subjective and personal preference
+  "editor.fontSize": "14px",
+  "editor.fontFamily": "Fira code", // Recommended: A font with ligatures
+  "ui.colorscheme": "solarized8_light", // Personal preference
   "terminal.shellCommand": "zsh",
 
   // Pretty GUI
   "tabs.mode": "tabs", // For those who like window-tabs (like in FireFox and Chrome)
-  "sidebar.plugins.enabled": true,
 
   "language.java.languageServer" : {
     command: "java-lsp",
@@ -94,10 +92,5 @@ module.exports = {
 
   /* Experimental features */
   "editor.quickInfo.delay": 100,
-  "sidebar.marks.enabled": true,
-  "experimental.markdownPreview.enabled": true,
-  "experimental.vcs.blame.enabled": true,
-  "experimental.vcs.sidebar": true,
-  "experimental.vcs.blame.timeout": 0,
 }
 
