@@ -5,8 +5,13 @@ import argparse
 import os
 import re
 
+
 def getOutputs():
-    process = subprocess.run(['xrandr'], stdout=subprocess.PIPE, universal_newlines=True)
+    process = subprocess.run(
+        ['xrandr'],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
     outputs = []
     for line in process.stdout.split('\n'):
         name_match = re.search(r'^(.+)\s+connected', line)
@@ -51,3 +56,4 @@ if __name__ == "__main__":
         setSingleMonitor(args.set, outputs)
     else:
         setSingleMonitor(outputs[-1], outputs[:-1])
+
