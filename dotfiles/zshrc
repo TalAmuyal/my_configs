@@ -119,7 +119,12 @@ function print_master_branch_name() {
 }
 
 # Aliases
+alias -g G="| egrep"
+alias -g Gv="G -v"
+alias C="clear &&"
+alias L="ll"
 alias vim="nvim"
+alias ncdu="ncdu --color dark -rr -x"
 if isOsx ; then
 	alias ll="ls -lAFhtr"
 else
@@ -127,11 +132,18 @@ else
 	alias ll="ls -lAFhtr --color"
 fi
 alias pyll='ll | egrep "(/|.py)$" | egrep -v " (\.|__)"'
+alias pyrm='rm -rf **/*.pyc **/.mypy_cache **/__pycache__'
 alias rrr='source ~/.zshrc'
 alias grep='grep --color=auto'
+alias gaa='git add .'
+alias gaaa='git add . && git amend'
 alias gg='git grep'
+alias ggc='gg --color=always'
+alias gb='git branch'
+alias gbd='git branch -D'
 alias gfo='git fetch origin'
 alias gcom='git checkout origin/$(print_master_branch_name)'
+alias gcb='git checkout'
 alias grc='git rebase --continue'
 alias gra='git rebase --abort'
 alias gcl='gfo && gcom'
@@ -160,6 +172,17 @@ gff() {
 remenv() {
 	ssh -t -i ~/.ssh/forter_id nomenu@prod-rugatka.frdstr.com remove prod $1
 }
+ct() {
+	pytest2 -fxvv --disable-warnings $@
+}
+oni-install() {
+	yarn install --ignore-engines --no-lockfile
+}
+lerna-install() {
+	npx lerna bootstrap -- --ignore-engines --no-lockfile
+}
+
+alias deploy='cd ~/dev/forter && make deploy-prod-tx'
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
