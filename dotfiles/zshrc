@@ -122,7 +122,10 @@ function print_master_branch_name() {
 alias -g G="| egrep"
 alias -g Gv="G -v"
 alias C="clear &&"
+alias -g H="--help | less"
 alias L="ll"
+alias FF="find . -type f"
+alias FD="find . -type d"
 alias vim="nvim"
 alias ncdu="ncdu --color dark -rr -x"
 if isOsx ; then
@@ -137,15 +140,19 @@ alias rrr='source ~/.zshrc'
 alias grep='grep --color=auto'
 alias gaa='git add .'
 alias gaaa='git add . && git amend'
+alias gaaap='git add . && git amend && gpof'
 alias gg='git grep'
 alias ggc='gg --color=always'
 alias gb='git branch'
 alias gbd='git branch -D'
+alias gl='git log'
+alias gst='git status'
 alias gfo='git fetch origin'
 alias gcom='git checkout origin/$(print_master_branch_name)'
 alias gcb='git checkout'
 alias grc='git rebase --continue'
 alias gra='git rebase --abort'
+alias grs='git rebase --skip'
 alias gcl='gfo && gcom'
 alias gsa='git stash'
 alias gsp='git stash pop'
@@ -154,32 +161,46 @@ alias gpof='gpo -f'
 alias grom='git rebase origin/$(print_master_branch_name)'
 alias grl='gfo && grom'
 alias grlp='grl && gpof'
+alias T='tmux -f ~/.config/tmux/config'
+alias TN='T new -ds'
 
 gri() {
 	git rebase -i "HEAD~$1"
 }
+
 gfc() {
 	title="${@:2}"
 	git feature create -p "R&D Board" "$title" && git pr "$1"
 }
+
 gs() {
 	title="${@:2}"
 	git commit -m "$title" && git feature create -p "R&D Board" "$title" && git pr "$1"
 }
+
 gff() {
 	git feature from "$2" && git pr "$1"
 }
+
 remenv() {
 	ssh -t -i ~/.ssh/forter_id nomenu@prod-rugatka.frdstr.com remove prod $1
 }
+
 ct() {
 	pytest2 -fxvv --disable-warnings $@
 }
-oni-install() {
-	yarn install --ignore-engines --no-lockfile
-}
-lerna-install() {
-	npx lerna bootstrap -- --ignore-engines --no-lockfile
+
+ttt() {
+	TN new -ds "Deploy"    "/bin/zsh"
+	TN new -ds "Analytics" "cd ~/dev/forter/analytics/src && pipenv run nvim"
+	TN new -ds "Pybolts"   "cd ~/dev/pybolts-infra && nvim"
+	TN new -ds "Velocity"  "cd ~/dev/velocity && nvim"
+	TN new -ds "Forter"    "cd ~/dev/forter/storm && nvim"
+	TN new -ds "Sess Per"  "cd ~/dev/sessions_persistence && nvim"
+	TN new -ds "Crons"     "cd ~/dev/Crons && nvim"
+	TN new -ds "Notes"     "cd ~/Documents/notes && nvim"
+	TN new -ds "Config"    "cd ~/.local/MyConfigs && nvim"
+	T attach -t Notes
 }
 
 alias deploy='cd ~/dev/forter && make deploy-prod-tx'
@@ -199,5 +220,6 @@ export VISUAL=nvim
 export EDITOR="$VISUAL"
 
 export PATH=$PATH:~/.local/npm-global/bin:~/.local/bin
-export PATH="/usr/local/bin/:$PATH:$HOME/bin/"
+export PATH="/usr/local/bin/:/usr/local/sbin:$PATH:$HOME/bin/"
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

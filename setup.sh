@@ -33,9 +33,10 @@ title "Making default dirs"
 mkdir -p ~/.local/npm-global ~/dev ~/workspace ~/science
 
 if `isOsx` ; then
-	title "Installing Homebrew"
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+	if ! hash brew 2>/dev/null; then
+		title "Installing Homebrew"
+		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	fi
 else
 	title "Updating packages cache"
 	sudo apt update
@@ -65,7 +66,7 @@ else
 fi
 
 title "Installing Python packages"
-pip3 install -U python-language-server pyls-mypy
+pip3 install -U python-language-server pyls-mypy xonsh click pipenv prompt-toolkit
 
 title "Setting symlinks"
 linkItem "Fonts directory"                            ~/.fonts                           "fonts"
@@ -78,12 +79,13 @@ if `isLinux` ; then
 	linkItem "Custom lock-screen image for i3wm"          ~/.config/i3/lockscreen-center.png "pictures/lockscreen-center.png"
 	#linkItem "Urxvt configuration"                        ~/.Xdefaults                       "dotfiles/Xdefaults"
 fi
-#linkItem "tmux configuration"                         ~/.config/tmux/config              "dotfiles/tmux.conf"
-#linkItem "Hyper.app configuration"                    ~/.hyper.js                        "dotfiles/hyper.js"
+
+linkItem "tmux configuration"                         ~/.config/tmux/config              "dotfiles/tmux.conf"
 linkItem "Git configuration (1/3)"                    ~/.gitconfig                       "dotfiles/gitconfig"
 linkItem "Git configuration (2/3)"                    ~/.gitignore                       "dotfiles/gitignore"
 linkItem "Git configuration (3/3)"                    ~/dev/.gitconfig                   "dotfiles/work-gitconfig"
 linkItem "Zsh configuration"                          ~/.zshrc                           "dotfiles/zshrc"
+linkItem "Xonsh configuration"                        ~/.xonshrc                         "dotfiles/xonshrc"
 linkItem "NPM configuration"                          ~/.npmrc                           "dotfiles/npmrc"
 linkItem "Oni configuration"                          ~/.oni/config.js                   "dotfiles/oni-config.js"
 linkItem "NeoVim configuration"                       ~/.config/nvim/init.vim            "dotfiles/init.vim"

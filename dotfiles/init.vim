@@ -9,61 +9,39 @@ call plug#begin('~/.vim/plugged')
 Plug 'editorconfig/editorconfig-vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'iCyMind/NeoSolarized'
-" Plug 'godlygeek/tabular'
-" Plug 'ntpeters/vim-better-whitespace'
-" Plug 'vim-scripts/Smart-Tabs'
 Plug 'wellle/targets.vim'
-Plug 'mhinz/vim-grepper'
 Plug 'nelstrom/vim-visual-star-search'
-Plug 'jreybert/vimagit'
-Plug 'sbdchd/neoformat'
-Plug 'danro/rename.vim'
-Plug 'nvie/vim-flake8'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
+Plug 'sheerun/vim-polyglot'
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh'}
+" Needed for LanguageClient-neovim:
+Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
+Plug 'meatballs/vim-xonsh'
 call plug#end()
 
 
-" Easy FS navigation commands
-:command Forter     cd ~/dev/forter
-:command Analytics  cd ~/dev/forter/analytics/src
-:command Pybolt     cd ~/dev/pybolts-infra
-:command Velocity   cd ~/dev/velocity
-:command Storm      cd ~/dev/forter/storm
-:command Yasr       cd ~/dev/yasr
-:command Crons      cd ~/dev/crons
-:command Session    cd ~/dev/sessions_persistence
-:command Scripts    cd ~/dev/scripts
-:command Confetti   cd ~/dev/confetti
-:command Attribute  cd ~/dev/attributes-rerun
-:command Effectless cd ~/dev/effectless-tx-boss
-:command Backoffice cd ~/dev/backoffice
-:command Rugatka    cd ~/dev/rugatka
+" Required for operations modifying multiple buffers like rename
+set hidden
+let g:LanguageClient_serverCommands = {
+    \ 'python': ['/usr/local/bin/pyls'],
+    \ }
+" Use deoplete
+let g:deoplete#enable_at_startup = 1
 
-:command Oni cd ~/workspace/oni/general
+" Map Tab & Shift-Tab for cycling in menus
+inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+" TODO: Fix completion selection using <ENTER>
 
-
-:command Workspace cd ~/workspace
-:command Science   cd ~/science
-
-:command Config    cd ~/.local/MyConfigs
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 " Easy Python term commands
-:command Ipython terminal ipython2
-:command Pytest  terminal pytest2
-
-
-" Oni-specific settings
-if exists("g:gui_oni")
-    " Turn off statusbar, because it is externalized
-    set noshowmode
-    set noruler
-    set noshowcmd
-    "set laststatus=0 <- Uncommnet when Oni handles splits correctly
-
-    " Enable GUI mouse behavior
-    set mouse=a
-endif
+:command Pytest  terminal pytest2  " TODO: Run for folder of current file
 
 " Set yanking and putting to work with the systems clipboard
 set clipboard+=unnamedplus
@@ -94,10 +72,9 @@ set splitright
 " Display white-spaces
 set list listchars=tab:»·,trail:·,nbsp:·
 
-" Disable arrow keys in normal mode - helps getting used to better movement
-" keys
-nnoremap <Left>  gT
-nnoremap <Right> gt
+" Disable arrow keys in normal mode - helps getting used to better movement keys
+nnoremap <Left>  :echoe "Use h"<CR>
+nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up>    :echoe "Use k"<CR>
 nnoremap <Down>  :echoe "Use j"<CR>
 
@@ -115,16 +92,14 @@ nnoremap <S-T> :tabnew<CR>:terminal<CR>A
 
 " Vertical terminal split: Pipe ('|')
 nnoremap <bar> :vsp<CR>:terminal<CR>A
-"tnoremap <bar> :vsp<CR>:terminal<CR>A
 
 " Horizontal terminal split: Underscore ('_')
 nnoremap _ :sp<CR>:terminal<CR>A
-"tnoremap _ :sp<CR>:terminal<CR>A
 
 nnoremap <C-I> :tabnew<CR>:terminal ipython2<CR>A
 
-" Re-bind <C-f> for searching with grep (<C-d> is used for scrolling)
-nnoremap <C-f> :GrepperGit 
+" Fuzzy-search file
+nnoremap <C-p> :FZF<CR>
 
 " Exit terminal mode
 tnoremap hj <C-\><C-n>
@@ -137,11 +112,10 @@ set spell spelllang=en_us
 
 highlight SpellBad ctermbg=001 ctermfg=007
 
-" White-list YCM configuration files (not used since Oni has an LSP client)
-"let g:ycm_extra_conf_globlist = ['~/workspace/*']
-
 " Remove compiled Python files form auto-complete
 set wildignore+=*.pyc
+
+set termguicolors
 
 syntax enable
 

@@ -9,6 +9,7 @@ EXAMPTION_APPS = [
     r"^co\.zeit\.hyperterm$",
     r"^co\.zeit\.hyper$",
     r"oni",
+    r"veonim",
 ]
 
 BROWSERS = [

@@ -1,0 +1,38 @@
+import json
+
+from pathlib import Path
+
+
+$XONSH_SHOW_TRACEBACK = False
+
+$AUTO_CD = '1'
+$CASE_SENSITIVE_COMPLETIONS = '1'
+$COMPLETIONS_CONFIRM = '1'
+$DOTGLOB = '1'
+$HISTCONTROL = {'ignoredups'}
+$LANG = 'en_US.UTF-8'
+$PATH = (
+    '/usr/local/bin',
+    '/usr/bin',
+    '/bin',
+    '/usr/sbin',
+    '/sbin',
+    '/usr/bin',
+    '/usr/local/bin',
+    '~/.local/npm-global/bin',
+    '~/.local/bin',
+    '~/bin',
+)
+#$UPDATE_COMPLETIONS_ON_KEYPRESS = '1'
+#$UPDATE_PROMPT_ON_KEYPRESS = '1'
+$VI_MODE = '1'
+$XONSH_DATA_DIR = `$XDG_DATA_HOME/xonsh`[0]
+#source-zsh ~/.zshrc
+
+#xontrib load click_tabcomplete docker_tabcomplete jedi mpl
+
+$PROMPT = lambda: ' '.join([
+    '{BACKGROUND_BLUE}{WHITE}{short_cwd} {NO_COLOR}',
+    #'{branch_color}{curr_branch}{NO_COLOR}',
+    '> ',
+])
