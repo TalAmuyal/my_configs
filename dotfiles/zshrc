@@ -121,23 +121,37 @@ function print_master_branch_name() {
 # Aliases
 alias -g G="| egrep"
 alias -g Gv="G -v"
-alias C="clear &&"
+alias -g C="clear &&"
 alias -g H="--help | less"
-alias L="ll"
+
 alias FF="find . -type f"
 alias FD="find . -type d"
+
+alias T='tmux -f ~/.config/tmux/config'
+alias TN='T new -ds'
 alias vim="nvim"
 alias ncdu="ncdu --color dark -rr -x"
-if isOsx ; then
-	alias ll="ls -lAFhtr"
+
+if hash exa 2>/dev/null; then
+	alias ls='exa'
+	alias ll='exa -l'
+	alias la='exa -la'
 else
-	alias ls='ls --color=auto'
-	alias ll="ls -lAFhtr --color"
+	if isOsx ; then
+		alias ll="ls -lAFhtr"
+	else
+		alias ls='ls --color=auto'
+		alias ll="ls -lAFhtr --color"
+	fi
 fi
+
 alias pyll='ll | egrep "(/|.py)$" | egrep -v " (\.|__)"'
 alias pyrm='rm -rf **/*.pyc **/.mypy_cache **/__pycache__'
+
 alias rrr='source ~/.zshrc'
+
 alias grep='grep --color=auto'
+
 alias gaa='git add .'
 alias gaaa='git add . && git amend'
 alias gaaap='git add . && git amend && gpof'
@@ -161,8 +175,6 @@ alias gpof='gpo -f'
 alias grom='git rebase origin/$(print_master_branch_name)'
 alias grl='gfo && grom'
 alias grlp='grl && gpof'
-alias T='tmux -f ~/.config/tmux/config'
-alias TN='T new -ds'
 
 gri() {
 	git rebase -i "HEAD~$1"
@@ -190,6 +202,8 @@ ct() {
 	pytest2 -fxvv --disable-warnings $@
 }
 
+alias deploy='cd ~/dev/forter && make deploy-prod-tx'
+
 ttt() {
 	TN new -ds "Deploy"    "/bin/zsh"
 	TN new -ds "Analytics" "cd ~/dev/forter/analytics/src && pipenv run nvim"
@@ -200,10 +214,9 @@ ttt() {
 	TN new -ds "Crons"     "cd ~/dev/Crons && nvim"
 	TN new -ds "Notes"     "cd ~/Documents/notes && nvim"
 	TN new -ds "Config"    "cd ~/.local/MyConfigs && nvim"
+	TN new -ds "Other"     "cd ~ && nvim"
 	T attach -t Notes
 }
-
-alias deploy='cd ~/dev/forter && make deploy-prod-tx'
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8

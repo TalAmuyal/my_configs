@@ -47,7 +47,7 @@ fi
 
 title "Installing OS packages"
 if `isOsx` ; then
-	brew install python3 node yarn neovim homebrew/cask/pinta
+	brew install python3 node yarn neovim exa
 else
 	sudo apt install --assume-yes xsel git zsh scrot python3 i3 pinta pavucontrol curl blueman
 
