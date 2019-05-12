@@ -21,6 +21,7 @@ Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
 Plug 'meatballs/vim-xonsh'
 call plug#end()
 
+set shell=zsh
 
 " Required for operations modifying multiple buffers like rename
 set hidden
