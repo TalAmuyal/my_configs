@@ -152,9 +152,11 @@ alias rrr='source ~/.zshrc'
 
 alias grep='grep --color=auto'
 
+alias gd='git diff'
 alias gaa='git add .'
 alias gaaa='git add . && git amend'
 alias gaaap='git add . && git amend && gpof'
+alias gcm='git commit -m'
 alias gg='git grep'
 alias ggc='gg --color=always'
 alias gb='git branch'
@@ -190,8 +192,10 @@ gs() {
 	git commit -m "$title" && git feature create -p "R&D Board" "$title" && git pr "$1"
 }
 
-gff() {
-	git feature from "$2" && git pr "$1"
+gbdc() {
+	branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
+	branch_name=${branch_name##refs/heads/}
+	gcom && gbd $branch_name
 }
 
 remenv() {
