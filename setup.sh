@@ -66,7 +66,7 @@ else
 fi
 
 title "Installing Python packages"
-pip3 install -U python-language-server pyls-mypy xonsh click pipenv prompt-toolkit
+pip3 install -U python-language-server pyls-mypy xonsh click pipenv prompt-toolkit ptpython
 
 title "Setting symlinks"
 linkItem "Fonts directory"                            ~/.fonts                           "fonts"

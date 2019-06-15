@@ -145,6 +145,10 @@ else
 	fi
 fi
 
+if hash ptpython 2>/dev/null; then
+	alias ipython='ptpython'
+fi
+
 alias pyll='ll | egrep "(/|.py)$" | egrep -v " (\.|__)"'
 alias pyrm='rm -rf **/*.pyc **/.mypy_cache **/__pycache__'
 
