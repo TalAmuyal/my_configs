@@ -36,6 +36,10 @@ title "Making default dirs"
 mkdir -p ~/.local/npm-global ~/dev ~/workspace ~/science
 
 if `isOsx` ; then
+	mkdir -p ~/.config/karabiner
+fi
+
+if `isOsx` ; then
 	if ! hash brew 2>/dev/null; then
 		title "Installing Homebrew"
 		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -118,4 +122,6 @@ if `isOsx` ; then
 	defaults write com.extropy.oni ApplePressAndHoldEnabled -bool false
 	defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$HOME/.local/MyConfigs/dotfiles"
 	defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
+
+	python3 "$HOME/.local/MyConfigs/scripts/gen_karabiner_config.py"
 fi

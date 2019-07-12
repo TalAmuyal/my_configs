@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 
 import json
+import os
 
 
 EXAMPTION_APPS = [
@@ -170,6 +171,7 @@ config = {
     'profiles': [profile],
 }
 
-with open('karabiner.json', 'w') as f:
+CONFIG_FILE_PATH = os.path.expanduser('~/.config/karabiner/karabiner.json')
+with open(CONFIG_FILE_PATH, 'w') as f:
     json.dump(config, f, sort_keys=True, indent=4)
 
