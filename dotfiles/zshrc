@@ -160,6 +160,7 @@ alias gd='git diff'
 alias gaa='git add .'
 alias gaaa='git add . && git amend'
 alias gaaap='git add . && git amend && gpof'
+alias gaac='git add . && git commit -m'
 alias gcm='git commit -m'
 alias gg='git grep'
 alias ggc='gg --color=always'
@@ -174,13 +175,16 @@ alias grc='git rebase --continue'
 alias gra='git rebase --abort'
 alias grs='git rebase --skip'
 alias gcl='gfo && gcom'
-alias gsa='git stash'
-alias gsp='git stash pop'
 alias gpo='git push origin'
 alias gpof='gpo -f'
 alias grom='git rebase origin/$(print_master_branch_name)'
 alias grl='gfo && grom'
 alias grlp='grl && gpof'
+
+gaacp() {
+	title="${@:1}"
+	git add . && git commit -m "$title" && git push origin
+}
 
 gri() {
 	git rebase -i "HEAD~$1"
