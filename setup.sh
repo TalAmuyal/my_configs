@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Sets up the environment as if after a fresh install
-# Intended to use on Ubuntu 17.04+ or Mac OS X High Sierra
+# Sets up a fresh OS install
+# Intended to be used on Ubuntu 17.04+ or Mac OS X Mojave
 
 isOsx() {
 	[ `uname` == "Darwin" ]
@@ -21,12 +21,15 @@ listItem() {
 }
 
 linkItem() {
-	if [[ ! -e $2 ]] ; then
-		listItem "$1"
-		linkDir=$(dirname $2)
-		mkdir -p "$linkDir"
-		ln -s $(pwd)/$3 $2
+	listItem "$1"
+
+	if [[ -e $2 ]] ; then
+		rm -rf "$2"
 	fi
+
+	linkDir=$(dirname $2)
+	mkdir -p "$linkDir"
+	ln -s $(pwd)/$3 $2
 }
 
 title "Making default dirs"
@@ -37,7 +40,9 @@ if `isOsx` ; then
 		title "Installing Homebrew"
 		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	fi
-else
+fi
+
+if `isLinux` ; then
 	title "Updating packages cache"
 	sudo apt update
 
@@ -47,9 +52,12 @@ fi
 
 title "Installing OS packages"
 if `isOsx` ; then
-	brew install python3 node yarn neovim exa
-else
-	sudo apt install --assume-yes xsel git zsh scrot python3 i3 pinta pavucontrol curl blueman
+	brew install git zsh tmux python3 exa node yarn neovim
+fi
+
+if `isLinux` ; then
+	sudo apt install --assume-yes xsel git zsh tmux scrot python3 i3 pinta pavucontrol curl blueman
+	echo "TODO: Install exa (Using nix?)"
 
 	if ! hash node 2>/dev/null; then
 		title "Installing NodeJS"
@@ -65,8 +73,23 @@ else
 	fi
 fi
 
-title "Installing Python packages"
-pip3 install -U python-language-server pyls-mypy xonsh click pipenv prompt-toolkit ptpython
+title "Installing Python infrastructure"
+pip3 install -U pipx
+
+title "Installing Python applications"
+pipx install userpath
+
+pipx install python-language-server
+pipx inject python-language-server pyls-mypy
+
+pipx install xonsh
+pipx inject xonsh prompt-toolkit
+
+pipx install pipenv
+pipx install ptpython
+
+title "Setting PATH"
+userpath append ~/.local/bin
 
 title "Setting symlinks"
 linkItem "Fonts directory"                            ~/.fonts                           "fonts"
