@@ -14,7 +14,7 @@ Plug 'nelstrom/vim-visual-star-search'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'sheerun/vim-polyglot'
-Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh'}
 " Needed for LanguageClient-neovim:
 Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
@@ -98,9 +98,6 @@ nnoremap <bar> :vsp<CR>:terminal<CR>A
 nnoremap _ :sp<CR>:terminal<CR>A
 
 nnoremap <C-I> :tabnew<CR>:terminal ipython2<CR>A
-
-" Fuzzy-search file
-nnoremap <C-p> :FZF<CR>
 
 " Exit terminal mode
 tnoremap hj <C-\><C-n>
