@@ -116,4 +116,6 @@ linkItem "NeoVim configuration"                       ~/.config/nvim/init.vim   
 if `isOsx` ; then
 	defaults write -g com.apple.swipescrolldirection -bool FALSE
 	defaults write com.extropy.oni ApplePressAndHoldEnabled -bool false
+	defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$HOME/.local/MyConfigs/dotfiles"
+	defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
 fi
