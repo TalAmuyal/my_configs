@@ -125,3 +125,6 @@ if `isOsx` ; then
 
 	python3 "$HOME/.local/MyConfigs/scripts/gen_karabiner_config.py"
 fi
+
+title "Install vim-plug"
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
