@@ -217,7 +217,7 @@ ct() {
 alias deploy='cd ~/dev/forter && make deploy-prod-tx'
 
 ttt() {
-	TN new -ds "Deploy"    "/bin/zsh"
+	TN new -ds "Deploy"    "cd ~ && nvim"
 	TN new -ds "Analytics" "cd ~/dev/forter/analytics/src && pipenv run nvim"
 	TN new -ds "Pybolts"   "cd ~/dev/pybolts-infra && nvim"
 	TN new -ds "Velocity"  "cd ~/dev/velocity && nvim"
