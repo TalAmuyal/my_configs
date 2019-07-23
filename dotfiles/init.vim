@@ -19,7 +19,12 @@ Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh
 " Needed for LanguageClient-neovim:
 Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
 Plug 'meatballs/vim-xonsh'
+Plug 'cespare/vim-toml'  " Support for highlighting toml filetype
 call plug#end()
+
+" Set syntax of specific file name to specific file type
+au BufNewFile,BufRead Pipfile      setf toml
+au BufNewFile,BufRead Pipfile.lock setf json
 
 set shell=zsh
 
