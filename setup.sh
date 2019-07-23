@@ -56,7 +56,7 @@ fi
 
 title "Installing OS packages"
 if `isOsx` ; then
-	brew install git zsh tmux python3 exa node yarn neovim
+	brew install watch git zsh tmux python3 exa node yarn neovim
 fi
 
 if `isLinux` ; then
