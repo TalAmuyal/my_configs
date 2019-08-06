@@ -1,8 +1,24 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 
 import json
 import os
 
+
+ctrl_to_cmd_mappings = [
+    ('copy', 'c'),
+    ('cut', 'x'),
+    ('paste', 'v'),
+    ('undo', 'z'),
+    ('select-all', 'a'),
+    ('save', 's'),
+    ('reload(Ctrl+R)', 'r'),
+    ('new tab', 't'),
+    ('find', 'f'),
+    ('slack-search / Google Docs link', 'k'),
+    ('bold', 'b'),
+    ('underline', 'u'),
+    ('italics', 'i'),
+]
 
 EXAMPTION_APPS = [
     r"^com\.apple\.Terminal$",
@@ -112,19 +128,6 @@ def map_ctrl_to_cmd(
 def reset_f_key(n):
     return map_key(f'f{n}', listify_to=False)
 
-
-ctrl_to_cmd_mappings = [
-    ('copy', 'c'),
-    ('cut', 'x'),
-    ('paste', 'v'),
-    ('undo', 'z'),
-    ('select-all', 'a'),
-    ('save', 's'),
-    ('reload(Ctrl+R)', 'r'),
-    ('new tab', 't'),
-    ('find', 'f'),
-    ('slack-search', 'k'),
-]
 
 rules = [
     map_ctrl_to_cmd(d, l, ACL.BLACK_LIST, EXAMPTION_APPS)
