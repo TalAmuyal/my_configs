@@ -76,7 +76,7 @@ set splitbelow
 set splitright
 
 " Display white-spaces
-set list listchars=tab:»·,trail:·,nbsp:·
+set list listchars=tab:«-»,trail:·,nbsp:·,eol:⏎
 
 " Disable arrow keys in normal mode - helps getting used to better movement keys
 nnoremap <Left>  :echoe "Use h"<CR>
