@@ -5,6 +5,7 @@
 	path = ~/dev/.gitconfig
 [alias]
 	co = checkout
+	detach = checkout HEAD --detach
 	st = status
 	amend = commit --amend --no-edit
 	glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
