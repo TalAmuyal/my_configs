@@ -246,6 +246,8 @@ export VISUAL=nvim
 export EDITOR="$VISUAL"
 
 export PATH=$PATH:~/.local/npm-global/bin:~/.local/bin
-export PATH="/usr/local/bin/:/usr/local/sbin:$PATH:$HOME/bin/"
+export PATH="/usr/local/bin/:/usr/local/sbin:$PATH"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
+
+eval "$(pipenv --completion)"

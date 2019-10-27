@@ -31,7 +31,7 @@ set shell=zsh
 " Required for operations modifying multiple buffers like rename
 set hidden
 let g:LanguageClient_serverCommands = {
-    \ 'python': ['/usr/local/bin/pyls'],
+    \ 'python': ['~/.local/bin/pyls'],
     \ }
 " Use deoplete
 let g:deoplete#enable_at_startup = 1

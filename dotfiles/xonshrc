@@ -12,16 +12,14 @@ $DOTGLOB = '1'
 $HISTCONTROL = {'ignoredups'}
 $LANG = 'en_US.UTF-8'
 $PATH = (
-    '/usr/local/bin',
-    '/usr/bin',
     '/bin',
-    '/usr/sbin',
     '/sbin',
     '/usr/bin',
+    '/usr/sbin',
     '/usr/local/bin',
-    '~/.local/npm-global/bin',
     '~/.local/bin',
-    '~/bin',
+    '~/.local/MyConfigs/aliases',
+    '~/.local/npm-global/bin',
 )
 #$UPDATE_COMPLETIONS_ON_KEYPRESS = '1'
 #$UPDATE_PROMPT_ON_KEYPRESS = '1'
