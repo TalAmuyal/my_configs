@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+git checkout origin/$(print_default_branch_name) "$@"

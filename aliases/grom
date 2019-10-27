@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+git rebase origin/$(print_default_branch_name)

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+git rebase -i "HEAD~$1"

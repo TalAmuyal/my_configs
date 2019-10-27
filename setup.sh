@@ -94,6 +94,7 @@ pipx install ptpython
 
 title "Setting PATH"
 userpath append ~/.local/bin
+userpath append ~/.local/MyConfigs/aliases
 
 title "Setting symlinks"
 linkItem "Fonts directory"                            ~/.fonts                           "fonts"
