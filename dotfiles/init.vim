@@ -115,8 +115,9 @@ set spell spelllang=en_us
 
 highlight SpellBad ctermbg=001 ctermfg=007
 
-" Remove compiled Python files form auto-complete
+" Remove compiled files form auto-complete
 set wildignore+=*.pyc
+set wildignore+=*.class
 
 set termguicolors
 
