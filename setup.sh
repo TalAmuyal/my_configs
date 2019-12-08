@@ -56,12 +56,14 @@ fi
 
 title "Installing OS packages"
 if `isOsx` ; then
-	brew install watch git zsh tmux python3 exa node yarn neovim
+	brew install watch git zsh tmux pyenv pipx exa node yarn neovim
 fi
 
 if `isLinux` ; then
 	sudo apt install --assume-yes xsel git zsh tmux scrot python3 i3 pinta pavucontrol curl blueman
 	echo "TODO: Install exa (Using nix?)"
+	echo "TODO: Install pyenv"
+	echo "TODO: Install pipx"
 
 	if ! hash node 2>/dev/null; then
 		title "Installing NodeJS"
@@ -77,8 +79,7 @@ if `isLinux` ; then
 	fi
 fi
 
-title "Installing Python infrastructure"
-pip3 install -U pipx
+pyenv install 3.8.0
 
 title "Installing Python applications"
 pipx install userpath
