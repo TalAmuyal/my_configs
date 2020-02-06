@@ -166,6 +166,8 @@ export EDITOR="$VISUAL"
 export PATH=$PATH:~/.local/npm-global/bin:~/.local/bin
 export PATH="/usr/local/bin/:/usr/local/sbin:$PATH"
 
+export PIP_REQUIRE_VIRTUALENV=true
+
 [[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
 
 eval "$(pipenv --completion)"
