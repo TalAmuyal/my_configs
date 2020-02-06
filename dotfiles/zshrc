@@ -171,3 +171,4 @@ export PIP_REQUIRE_VIRTUALENV=true
 [[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
 
 eval "$(pipenv --completion)"
+eval "$(_FORTER_COMPLETE=source_zsh forter)"
