@@ -1,13 +1,13 @@
 #!/bin/bash
 
-TN "0-0-Analytics" -c "$HOME/dev/forter/analytics/src" pipenv run nvim
-TN "0-1-Pybolts"   -c "$HOME/dev/pybolts-infra"        pipenv run nvim
+TN "0-0-Analytics" -c "$HOME/dev/forter/analytics"     nvim
+TN "0-1-Velocity"  -c "$HOME/dev/velocity"             pipenv run nvim
 TN "0-2-Forter"    -c "$HOME/dev/forter/storm"         nvim
-TN "0-3-Velocity"  -c "$HOME/dev/velocity"             pipenv run nvim
-TN "0-4-YASR"      -c "$HOME/dev/yasr"                 pipenv run nvim
-TN "0-5-SP/EV"     -c "$HOME/dev/sessions_persistence" nvim
-TN "0-6-Crons"     -c "$HOME/dev/crons"                nvim
-TN "0-7-Crons DSL" -c "$HOME/dev/crons_dsl"            nvim
+TN "0-3-YASR"      -c "$HOME/dev/yasr"                 pipenv run nvim
+TN "0-4-SP/EV"     -c "$HOME/dev/sessions_persistence" nvim
+TN "0-5-Crons"     -c "$HOME/dev/crons"                nvim
+TN "0-6-Crons DSL" -c "$HOME/dev/crons_dsl"            nvim
+
 TN "1-0-Config"    -c "$HOME/.local/MyConfigs"         nvim
 TN "1-1-Other"     -c "$HOME"                          nvim
 
