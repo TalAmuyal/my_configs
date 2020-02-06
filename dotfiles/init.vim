@@ -32,6 +32,7 @@ set shell=zsh
 set hidden
 let g:LanguageClient_serverCommands = {
     \ 'python': ['~/.local/bin/pyls'],
+    \ 'js': ['javascript-typescript-stdio'],
     \ }
 " Use deoplete
 let g:deoplete#enable_at_startup = 1
