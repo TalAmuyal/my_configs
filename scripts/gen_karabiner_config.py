@@ -18,6 +18,8 @@ ctrl_to_cmd_mappings = [
     ('bold', 'b'),
     ('underline', 'u'),
     ('italics', 'i'),
+    ('end-of-line', 'right_arrow'),
+    ('start-of-line', 'left_arrow'),
 ]
 
 EXAMPTION_APPS = [
