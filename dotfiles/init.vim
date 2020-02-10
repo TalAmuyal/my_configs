@@ -128,7 +128,15 @@ set termguicolors
 
 syntax enable
 
-" Set a custom color-scheme
+" Set a custom color-scheme based on the time of day
 colorscheme NeoSolarized
-set background=dark
-
+func SelectBackground(timer)
+	let hr = (strftime('%H'))
+	if 19 > hr && hr > 8
+		set background=light
+	else
+		set background=dark
+	endif
+endfunc
+let theme_timer = timer_start(60 * 1000, 'SelectBackground', {'repeat': -1})
+call SelectBackground(theme_timer)
