@@ -27,6 +27,7 @@ EXAMPTION_APPS = [
     r"^com\.googlecode\.iterm2$",
     r"^co\.zeit\.hyperterm$",
     r"^co\.zeit\.hyper$",
+    r"alacritty",
     r"oni",
     r"veonim",
 ]

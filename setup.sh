@@ -56,11 +56,13 @@ fi
 
 title "Installing OS packages"
 if `isOsx` ; then
+	brew cask install alacritty
 	brew install watch git zsh tmux pyenv pipx exa node yarn neovim
 fi
 
 if `isLinux` ; then
-	sudo apt install --assume-yes xsel git zsh tmux scrot python3 i3 pinta pavucontrol curl blueman
+	sudo add-apt-repository ppa:mmstick76/alacritty
+	sudo apt install --assume-yes xsel git zsh tmux scrot python3 i3 pinta pavucontrol curl blueman alacritty
 	echo "TODO: Install exa (Using nix?)"
 	echo "TODO: Install pyenv"
 	echo "TODO: Install pipx"
@@ -118,6 +120,7 @@ linkItem "Xonsh configuration"                        ~/.xonshrc                
 linkItem "NPM configuration"                          ~/.npmrc                           "dotfiles/npmrc"
 linkItem "Oni configuration"                          ~/.oni/config.js                   "dotfiles/oni-config.js"
 linkItem "NeoVim configuration"                       ~/.config/nvim/init.vim            "dotfiles/init.vim"
+linkItem "Alacritty configuration"                    ~/.config/alacritty/alacritty.yml  "dotfiles/alacritty.yml"
 
 if `isOsx` ; then
 	defaults write -g com.apple.swipescrolldirection -bool FALSE
