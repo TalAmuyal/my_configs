@@ -56,6 +56,8 @@ fi
 
 title "Installing OS packages"
 if `isOsx` ; then
+	brew tap homebrew/cask-fonts
+	brew cask install font-fira-code
 	brew cask install alacritty
 	brew install watch git zsh tmux pyenv pipx exa node yarn neovim
 fi
