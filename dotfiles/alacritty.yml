@@ -11,7 +11,7 @@ font:
   normal:
     family: "Fira Code"
 
-  size: 11.0
+  size: 11.5
 
 schemes:
   solarized_light: &light
