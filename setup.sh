@@ -3,6 +3,8 @@
 # Sets up a fresh OS install
 # Intended to be used on Ubuntu 17.04+ or Mac OS X Mojave
 
+GLOBAL_PYTHON_VERSION=3.8.2
+
 isOsx() {
 	[ `uname` == "Darwin" ]
 }
@@ -59,7 +61,7 @@ if `isOsx` ; then
 	brew tap homebrew/cask-fonts
 	brew cask install font-fira-code
 	brew cask install alacritty
-	brew install watch git zsh tmux pyenv pipx exa node yarn neovim
+	brew install watch git zsh tmux pyenv exa node yarn neovim
 fi
 
 if `isLinux` ; then
@@ -67,7 +69,6 @@ if `isLinux` ; then
 	sudo apt install --assume-yes xsel git zsh tmux scrot python3 i3 pinta pavucontrol curl blueman alacritty
 	echo "TODO: Install exa (Using nix?)"
 	echo "TODO: Install pyenv"
-	echo "TODO: Install pipx"
 
 	if ! hash node 2>/dev/null; then
 		title "Installing NodeJS"
@@ -83,7 +84,20 @@ if `isLinux` ; then
 	fi
 fi
 
-pyenv install 3.8.0
+pyenv install $GLOBAL_PYTHON_VERSION
+
+install_pipx() {
+	title "Installing pipx"
+
+	PIPX_ENV_DIR=~/.local/pipx_python_env
+	mkdir -p $PIPX_ENV_DIR
+	pushd $PIPX_ENV_DIR
+	pyenv local $GLOBAL_PYTHON_VERSION
+	python -m venv $PIPX_ENV_DIR/.venv
+	bash -c "source .venv/bin/activate && python -m pip install pipx"
+	popd
+}
+hash pipx 2>/dev/null || install_pipx()
 
 title "Installing Python applications"
 pipx install userpath
@@ -118,6 +132,7 @@ linkItem "Git configuration (1/3)"                    ~/.gitconfig              
 linkItem "Git configuration (2/3)"                    ~/.gitignore                       "dotfiles/gitignore"
 linkItem "Git configuration (3/3)"                    ~/dev/.gitconfig                   "dotfiles/work-gitconfig"
 linkItem "Zsh configuration"                          ~/.zshrc                           "dotfiles/zshrc"
+linkItem "Global shell configuration"                 ~/.profile                         "dotfiles/profile"
 linkItem "Xonsh configuration"                        ~/.xonshrc                         "dotfiles/xonshrc"
 linkItem "NPM configuration"                          ~/.npmrc                           "dotfiles/npmrc"
 linkItem "Oni configuration"                          ~/.oni/config.js                   "dotfiles/oni-config.js"
@@ -127,10 +142,10 @@ linkItem "Alacritty configuration"                    ~/.config/alacritty/alacri
 if `isOsx` ; then
 	defaults write -g com.apple.swipescrolldirection -bool FALSE
 	defaults write com.extropy.oni ApplePressAndHoldEnabled -bool false
-	defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$HOME/.local/MyConfigs/dotfiles"
+	defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$PWD/dotfiles"
 	defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
 
-	python3 "$HOME/.local/MyConfigs/scripts/gen_karabiner_config.py"
+	python3 "$PWD/scripts/gen_karabiner_config.py"
 fi
 
 title "Install vim-plug"
