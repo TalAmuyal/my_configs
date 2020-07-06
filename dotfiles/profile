@@ -1,0 +1,12 @@
+#TODO: Use a similar command for company-specific configs
+#[[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
+
+PATH=\
+/usr/local/bin/:\
+/usr/local/sbin:\
+$PATH:\
+~/.local/npm-global/bin:\
+~/.local/bin:\
+~/.local/MyConfigs/aliases
+
+eval "$(pyenv init -)"
