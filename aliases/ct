@@ -2,4 +2,4 @@
 
 set -e
 
-piptest -fxvv "$@"
+mre python -m pytest --disable-warnings -fxvv "$@"

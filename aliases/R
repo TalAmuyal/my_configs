@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+find . -type f | grep "\.py\$" | xargs gsed -i "s/$1/$2/g"
