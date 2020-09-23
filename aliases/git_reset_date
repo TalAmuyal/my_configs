@@ -2,4 +2,4 @@
 
 set -e
 
-git commit --amend --no-edit --date=now && git rebase --continue
+sleep 1.1 && git commit --amend --no-edit --date=now && git rebase --continue
