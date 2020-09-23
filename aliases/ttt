@@ -1,13 +1,16 @@
 #!/bin/bash
 
 TN "0-0-Analytics" -c "$HOME/dev/analytics"     nvim
-TN "0-1-Velocity"  -c "$HOME/dev/velocity"      nvim
-TN "0-2-Forter"    -c "$HOME/dev/forter"        nvim
-TN "0-3-Crons"     -c "$HOME/dev/crons"         nvim
-TN "0-4-Crons DSL" -c "$HOME/dev/crons_dsl"     nvim
-TN "0-5-Hamato"    -c "$HOME/dev/hamatoyoshi"   nvim
+TN "0-1-Analytics" -c "$HOME/dev/analytics_2"   nvim
+TN "0-2-Analytics" -c "$HOME/dev/analytics_3"   nvim
+TN "0-3-Forter"    -c "$HOME/dev/forter"        nvim
 
-TN "1-0-Config"    -c "$HOME/.local/MyConfigs"  nvim
-TN "1-1-Other"     -c "$HOME"                   nvim
+TN "1-0-Crons"     -c "$HOME/dev/crons"         nvim
+TN "1-1-Crons DSL" -c "$HOME/dev/crons_dsl"     nvim
+TN "1-2-Hamato"    -c "$HOME/dev/hamatoyoshi"   nvim
+
+TN "2-0-Config"    -c "$HOME/.local/MyConfigs"  nvim
+TN "2-1-Other"     -c "$HOME"                   nvim
+TN "2-2-R&D"       -c "$HOME/workspace/ppp"     nvim
 
 TA "0-0-Analytics"
