@@ -1,3 +1,6 @@
+[![Ubuntu - CircleCI](https://circleci.com/gh/TalAmuyal/MyConfigs.svg?style=shield)](https://github.com/TalAmuyal/MyConfigs)
+[![Mac OS X - Travis](https://travis-ci.com/TalAmuyal/MyConfigs.svg?branch=master)](https://github.com/TalAmuyal/MyConfigs)
+
 This is my configurations repo.
 
 # Installation

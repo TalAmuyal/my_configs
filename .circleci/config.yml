@@ -1,0 +1,30 @@
+version: 2.1
+jobs:
+    test-ubuntu:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                name: Prepare
+                command: |
+                    docker build --tag my_config_test -f test/Dockerfile .
+            - run:
+                name: Run
+                command: |
+                    docker run --rm -it my_config_test /bin/bash .local/personal_configs/setup.sh
+    test-macos:
+        macos:
+            xcode: 11.3.0
+        steps:
+            - checkout
+            - run:
+                name: Run
+                command: |
+                    /bin/bash ./setup.sh
+
+workflows:
+    version: 2
+    build-test-release:
+        jobs:
+            - test-ubuntu
+            #- test-macos

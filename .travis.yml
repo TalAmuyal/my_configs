@@ -1,0 +1,7 @@
+jobs:
+    include:
+        - os: osx
+          osx_image: xcode12.2
+          language: minimal
+
+script: /bin/bash ./setup.sh
