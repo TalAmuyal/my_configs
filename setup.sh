@@ -1,54 +1,53 @@
 #!/bin/bash
 
-# Sets up a fresh OS install
-# Intended to be used on Ubuntu 17.04+ or Mac OS X Mojave
+set -euo
 
-GLOBAL_PYTHON_VERSION=3.8.2
+# Sets up a fresh or existing OS install, including app installation and configuration
+# Intended to be used on Ubuntu or Mac OS X
+#
+# Ansible was considered, but setting up Ansible for local setup is too much of a work and could be just done instead
 
-isOsx() {
-	[ `uname` == "Darwin" ]
+echo "CWD: $PWD"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+echo "Script: $SCRIPT_DIR"
+
+load() {
+	NAME=$1
+	source "$SCRIPT_DIR/setup/$NAME.sh"
 }
 
-isLinux() {
-	[ `uname` == "Linux" ]
+execute() {
+	NAME=$1
+	shift
+	bash "$SCRIPT_DIR/setup/$NAME.sh" "$@"
 }
 
-title() {
-	echo
-	echo "~~~ $1 ~~~"
-}
+load variables
+load prints
+load detect_os
 
-listItem() {
-	echo " - $1"
-}
+title "Making default directories"
+execute \
+	fix_each \
+	"ls" \
+	"mkdir -p" \
+	"create" \
+	~/.local/npm-global \
+	~/dev \
+	~/workspace \
+	~/science
+[ "$OS" == "X" ] && execute fix_each "ls" "mkdir -p" "create" ~/.config/karabiner
+# Verify that at least one of the folders has been created
+ls -l ~/science > /dev/null || exit 1
 
-linkItem() {
-	listItem "$1"
 
-	if [[ -e $2 ]] ; then
-		rm -rf "$2"
-	fi
-
-	linkDir=$(dirname $2)
-	mkdir -p "$linkDir"
-	ln -s $(pwd)/$3 $2
-}
-
-title "Making default dirs"
-mkdir -p ~/.local/npm-global ~/dev ~/workspace ~/science
-
-if `isOsx` ; then
-	mkdir -p ~/.config/karabiner
+if [ "$OS" == "X" ] ; then
+	[ "$TRAVIS" == "true" ] && yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)" ; ! hash brew > /dev/null 2>&1
+	execute fix "hash brew" 'yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"' "Brew" "install"
 fi
 
-if `isOsx` ; then
-	if ! hash brew 2>/dev/null; then
-		title "Installing Homebrew"
-		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	fi
-fi
 
-if `isLinux` ; then
+if [ "$OS" == "Ubuntu" ] ; then
 	title "Updating packages cache"
 	sudo apt update
 
@@ -56,19 +55,43 @@ if `isLinux` ; then
 	sudo apt upgrade --assume-yes
 fi
 
+
+if [ hash git 2>/dev/null ] ; then
+	title "Git already installed"
+else
+	title "Installing Git"
+	[ "$OS" == "X"      ] && brew install git
+	[ "$OS" == "Ubuntu" ] && sudo apt install --assume-yes git
+	[ ! hash git 2>/dev/null ] && echo "Failed to install Git" && exit 1
+fi
+
+
+if [ hash pyenv 2>/dev/null ] ; then
+	title "Pyenv already installed"
+else
+	title "Installing Pyenv"
+	git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+fi
+
+
+echo "Done"
+exit 0
+
+
+
+
 title "Installing OS packages"
-if `isOsx` ; then
+if [ "$OS" == "X" ] ; then
 	brew tap homebrew/cask-fonts
 	brew cask install font-fira-code
 	brew cask install alacritty
-	brew install watch git zsh tmux pyenv exa node yarn neovim
+	brew install watch git zsh tmux exa node yarn neovim
 fi
 
-if `isLinux` ; then
-	sudo add-apt-repository ppa:mmstick76/alacritty
+if [ "$OS" == "Ubuntu" ] ; then
+	sudo add-apt-repository -y ppa:mmstick76/alacritty
 	sudo apt install --assume-yes xsel git zsh tmux scrot python3 i3 pinta pavucontrol curl blueman alacritty
 	echo "TODO: Install exa (Using nix?)"
-	echo "TODO: Install pyenv"
 
 	if ! hash node 2>/dev/null; then
 		title "Installing NodeJS"
@@ -83,6 +106,10 @@ if `isLinux` ; then
 		sudo mv nvim.appimage /usr/bin/nvim
 	fi
 fi
+
+
+
+
 
 pyenv install $GLOBAL_PYTHON_VERSION
 
@@ -150,3 +177,14 @@ fi
 
 title "Install vim-plug"
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+title "Install Vimspector"
+mkdir -p $HOME/.config/nvim/pack
+
+if `isLinux` ; then
+	VIMSPECTOR_DIST="linux"
+fi
+if `isOsx` ; then
+	VIMSPECTOR_DIST="macos"
+fi
+curl -L https://github.com/puremourning/vimspector/releases/download/262675652/vimspector-$VIMSPECTOR_DIST-262675652.tar.gz | tar -C $HOME/.config/nvim/pack zxvf -
