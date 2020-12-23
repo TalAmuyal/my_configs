@@ -13,6 +13,7 @@ Plug 'wellle/targets.vim'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-dadbod'
 Plug 'sheerun/vim-polyglot'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh'}
