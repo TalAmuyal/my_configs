@@ -8,5 +8,3 @@ $PATH:\
 ~/.local/npm-global/bin:\
 ~/.local/bin:\
 ~/.local/MyConfigs/aliases
-
-eval "$(pyenv init -)"
