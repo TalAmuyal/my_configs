@@ -138,6 +138,7 @@ linkItem "NPM configuration"                          ~/.npmrc                  
 linkItem "Oni configuration"                          ~/.oni/config.js                   "dotfiles/oni-config.js"
 linkItem "NeoVim configuration"                       ~/.config/nvim/init.vim            "dotfiles/init.vim"
 linkItem "Alacritty configuration"                    ~/.config/alacritty/alacritty.yml  "dotfiles/alacritty.yml"
+linkItem "Kitty configuration"                        ~/.config/kitty/kitty.conf         "dotfiles/kitty.conf"
 
 if `isOsx` ; then
 	defaults write -g com.apple.swipescrolldirection -bool FALSE
