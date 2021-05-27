@@ -1,4 +1,4 @@
-let g:python3_host_prog = '~/.local/manual_virtual_envs/neovim/bin/python'
+let g:python3_host_prog = '~/.local/python_venvs/pynvim/bin/python'
 
 " Install the `plug` plugin-manager if it is missing
 if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
@@ -6,82 +6,208 @@ if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+let s:work_instance = getcwd() . '/' =~ '^' . $HOME . '/dev/'
+let s:non_work_instance = !s:work_instance
+
 " Collect plugins
 call plug#begin('~/.vim/plugged')
-Plug 'editorconfig/editorconfig-vim'
-Plug 'airblade/vim-gitgutter'
+if s:non_work_instance
+	Plug 'github/copilot.vim'
+endif
+Plug 'nvim-lua/plenary.nvim'  " LUA utils, required by telescope
+Plug 'sharkdp/fd'  " "find" replacment, required by telescope
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
 Plug 'iCyMind/NeoSolarized'
+Plug 'shaunsingh/solarized.nvim'
 Plug 'wellle/targets.vim'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dadbod'
 Plug 'sheerun/vim-polyglot'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh'}
-" Needed for LanguageClient-neovim:
-Plug 'Shougo/deoplete.nvim', {'do': ':UpdateRemotePlugins'}
-Plug 'meatballs/vim-xonsh'
 Plug 'cespare/vim-toml'  " Support for highlighting toml filetype
 Plug 'psf/black'
-"Plug 'TalAmuyal/black', { 'branch': 'dev' }
-"Plug '~/workspace/black'
-Plug 'machakann/vim-highlightedyank'
+"
+"LSP
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'tami5/lspsaga.nvim'
+"
+"DAP
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'mfussenegger/nvim-dap-python'
+"
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " After installation, run :TSInstall python
+Plug 'wsdjeg/vim-fetch'
 call plug#end()
 
-packadd! vimspector
-
 " Set syntax of specific file name to specific file type
-au BufNewFile,BufRead Pipfile      setf toml
-au BufNewFile,BufRead Pipfile.lock setf json
+autocmd BufNewFile,BufRead Pipfile      setf toml
+autocmd BufNewFile,BufRead Pipfile.lock setf json
 
-let g:highlightedyank_highlight_duration = 300
+autocmd BufReadCmd *.egg,*.whl,*.jar,*.xpi call zip#Browse(expand("<amatch>"))
 
-let g:black_linelength=79
+" Set Groovy indentation
+autocmd FileType groovy setlocal shiftwidth=4 softtabstop=4 expandtab
+
+"if s:non_work_instance
+	imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+	let g:copilot_no_tab_map = v:true
+"endif
+
+
+autocmd TextYankPost * silent! lua vim.highlight.on_yank({timeout=200})
+
+let g:black_linelength = s:work_instance ? 120 : 79
 "autocmd BufWritePre *.py execute ':Black'
+
 
 set shell=zsh
 
+lua <<EOF
+
+-- Add my dotfiles repo to the runtime path
+local my_vim_rc = os.getenv("MYVIMRC")
+real_my_vim_rc = vim.fn.resolve(vim.fn.expand(my_vim_rc))
+my_lua_modules_dir = real_my_vim_rc:gsub("init.vim$", "") .. "nvim_lua"
+package.path = package.path .. ";" .. my_lua_modules_dir .. "/?.lua"
+
+-- Remap space as leader key
+vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
+-- Load my custom configuration
+require("dap_conf")
+
+EOF
+
+" Setup nvim-cmp.
+set completeopt=menu,menuone,noselect
+lua <<EOF
+
+
+
+-- Setup nvim-cmp.
+local cmp = require'cmp'
+
+cmp.setup({
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users
+    end,
+  },
+  mapping = {
+  ["<Tab>"] = cmp.mapping(function(fallback)
+    if cmp.visible() then
+      cmp.select_next_item()
+    else
+      fallback() -- The fallback function sends an already mapped key. In this case, it's probably <Tab>
+    end
+  end, { "i", "s" }),
+
+  ["<S-Tab>"] = cmp.mapping(function()
+    if cmp.visible() then
+      cmp.select_prev_item()
+    elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+      feedkey("<Plug>(vsnip-jump-prev)", "")
+    end
+  end, { "i", "s" }),
+
+    ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+    ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+    ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+    ['<C-e>'] = cmp.mapping({
+      i = cmp.mapping.abort(),
+      c = cmp.mapping.close(),
+    }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  },
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+    { name = 'spell' },
+  })
+})
+
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline('/', {
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
+-- Setup lspconfig.
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+function on_init (client)
+  --local file = assert(io.popen('py_print --work-dir ' .. client.config.root_dir, 'r'))
+  --local interpreter = file:read('*all'):gsub("%s+", "")
+  --file:close()
+
+  --local log_file = io.open("/Users/tal_amuyal/Desktop/lualog.txt", "a")
+  --io.output(log_file)
+  --io.write(interpreter.."\n")
+  --io.close(log_file)
+
+  client.config.settings.pylsp.plugins.jedi.environment = interpreter
+  client.notify("workspace/didChangeConfiguration")
+  return true
+end
+
+require('lspconfig')['pylsp'].setup {
+  capabilities = capabilities,
+  on_init = on_init,
+}
+
+require('lspconfig').rust_analyzer.setup({})
+
+
+-- Leader shortcuts
+vim.api.nvim_set_keymap('n', '<leader>gd', [[<cmd>lua vim.lsp.buf.definition()<CR>]], { noremap = true, silent = true })
+--vim.api.nvim_set_keymap('n', '<leader>gD', [[<cmd>lua vim.lsp.buf.declaration()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>spd', [[<cmd>Lspsaga preview_definition<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>gr', [[<cmd>lua vim.lsp.buf.references()<CR>]], { noremap = true, silent = true })
+--vim.api.nvim_set_keymap('n', '<leader>gi', [[<cmd>lua vim.lsp.buf.implementation()<CR>]], { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<leader>rr',  [[<cmd>Lspsaga rename<CR>]],               { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sd',  [[<cmd>Lspsaga hover_doc<CR>]],            { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ssh', [[<cmd>Lspsaga signature_help<CR>]],       { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>gnd', [[<cmd>Lspsaga diagnostic_jump_next<CR>]], { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<leader>cs', [[<cmd>vsp ~/Documents/Private/cheat_sheet.md<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>vs', [[<cmd>vsp ~/.local/MyConfigs/dotfiles/init.vim<CR>]], { noremap = true, silent = true })
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+
+-- Other shortcuts
+vim.api.nvim_set_keymap('i', '<C-p>', [[<C-r>+]], { noremap = true, silent = true })
+
+EOF
+
 " Required for operations modifying multiple buffers like rename
 set hidden
-let g:LanguageClient_serverCommands = {
-    \ 'python': ['~/.local/bin/pyls'],
-    \ 'js': ['javascript-typescript-stdio'],
-    \ }
-" Use deoplete
-let g:deoplete#enable_at_startup = 1
 
-" Map Tab & Shift-Tab for cycling in menus
-inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-" TODO: Fix completion selection using <ENTER>
-
-" LSP
-nnoremap <F1>          :call LanguageClient_contextMenu()<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-nnoremap <silent> gd   :call LanguageClient#textDocument_definition()<CR>
-
-" DAP
-func RunDebugger()
-	let file_name = expand('%:t')
-	if file_name =~ '^test_.*\.py$'
-		call vimspector#LaunchWithSettings( { 'configuration': 'test' } )
-	elseif file_name =~ '.*\.py$'
-		call vimspector#LaunchWithSettings( { 'configuration': 'src' } )
-	else
-		call vimspector#LaunchWithSettings( {  } )
-	endif
-endfunc
-nmap <F3>   <Plug>VimspectorRestart
-nmap <F4>   :VimspectorReset<CR>
-nmap <F5>   :call RunDebugger()<CR>
-nmap <F6>   <Plug>VimspectorToggleBreakpoint
-nmap <F9>   <Plug>VimspectorStepInto
-nmap <F10>  <Plug>VimspectorStepOver
-nmap <F11>  <Plug>VimspectorStepOut
-
-" Easy Python term commands
-:command Pytest  terminal pytest2  " TODO: Run for folder of current file
+" <leader>e -- Edit file, starting in same directory as current file
+nnoremap <leader>e :edit <C-R>=expand('%:h') . '/'<CR>
+nnoremap <leader>E :edit <C-R>=expand('%:p:h') . '/'<CR>
 
 set inccommand=nosplit
 
@@ -138,8 +264,6 @@ nnoremap <bar> :vsp<CR>:terminal<CR>A
 " Horizontal terminal split: Underscore ('_')
 nnoremap _ :sp<CR>:terminal<CR>A
 
-nnoremap <C-I> :tabnew<CR>:terminal ipython2<CR>A
-
 " Exit terminal mode
 tnoremap hj <C-\><C-n>
 
@@ -149,9 +273,14 @@ set diffopt+=vertical
 " Enable spell checking
 set spell spelllang=en_us
 
-highlight SpellBad ctermbg=001 ctermfg=007
-
-" Remove compiled files form auto-complete
+" Remove compiled (and other) files form auto-complete
+set wildignore+=*/tmp/*
+set wildignore+=*/dist/*
+set wildignore+=*/target/CACHEDIR.TAG
+set wildignore+=*/target/debug/*
+set wildignore+=*.so
+set wildignore+=*.swp
+set wildignore+=*.zip
 set wildignore+=*.pyc
 set wildignore+=*.class
 
@@ -162,12 +291,21 @@ syntax enable
 " Set a custom color-scheme based on the time of day
 colorscheme NeoSolarized
 func SelectBackground(timer)
-	let hr = (strftime('%H'))
-	if 19 > hr && hr > 8
+	let theme_mode = trim(system('print_theme_mode'))
+	if theme_mode == 'light-mode'
 		set background=light
-	else
+	elseif theme_mode == 'dark-mode'
 		set background=dark
+		highlight LineNr       guibg=#073642
+		highlight CursorLine   guibg=#073642
+		highlight CursorLineNr guibg=#002b36
 	endif
+
+	" "*bg=NONE" means "transparent"
+	highlight Normal       guibg=NONE
+	highlight NonText      guibg=NONE
+	highlight SpellBad                   ctermbg=001       ctermfg=007
+
 endfunc
 let theme_timer = timer_start(60 * 1000, 'SelectBackground', {'repeat': -1})
 call SelectBackground(theme_timer)

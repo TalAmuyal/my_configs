@@ -2,4 +2,4 @@
 
 set -e
 
-find . -type f | grep "\.py\$" | xargs gsed -i "s/$1/$2/g"
+find . -type f | grep "\.py\$" | grep -v "\.venv/" | xargs gsed -i "s/$1/$2/g"
