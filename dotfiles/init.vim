@@ -1,3 +1,5 @@
+let g:python3_host_prog = '~/.local/manual_virtual_envs/neovim/bin/python'
+
 " Install the `plug` plugin-manager if it is missing
 if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
