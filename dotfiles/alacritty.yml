@@ -1,6 +1,12 @@
 window:
   dynamic_padding: true
-  startup_mode: SimpleFullscreen
+  #startup_mode: SimpleFullscreen
+  startup_mode: Maximized
+  decorations: none
+  #
+  # Window opacity as a floating point number from `0.0` to `1.0`.
+  # The value `0.0` is completely transparent and `1.0` is opaque.
+  opacity: 0.8
 
 scrolling:
   history: 0
@@ -9,7 +15,7 @@ font:
   normal:
     family: "Fira Code"
 
-  size: 15
+  size: 16
 
 schemes:
   solarized_light: &light
@@ -90,12 +96,6 @@ colors: *dark
 #  animation: EaseOutExpo
 #  duration: 0
 #  color: '0xffffff'
-
-# Background opacity
-#
-# Window opacity as a floating point number from `0.0` to `1.0`.
-# The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.8
 
 selection:
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
@@ -228,8 +228,7 @@ shell:
 # be mapped to the `ReceiveChar` action. Alternatively, you can use `None` for
 # a no-op if you do not wish to receive input characters for that binding.
 key_bindings:
-  - { key: Key0,     mods: alt,       action: ResetFontSize    }
-  - { key: Equals,   mods: alt,       action: IncreaseFontSize }
-  - { key: Add,      mods: alt,       action: IncreaseFontSize }
-  - { key: Subtract, mods: alt,       action: DecreaseFontSize }
-  - { key: Minus,    mods: alt,       action: DecreaseFontSize }
+  - { key: Key0,   mods: Alt|Option, action: ResetFontSize          }
+  - { key: Equals, mods: Alt|Option, action: IncreaseFontSize       }
+  - { key: Minus,  mods: Alt|Option, action: DecreaseFontSize       }
+  - { key: Key9,   mods: Alt|Option, action: ToggleSimpleFullscreen }
