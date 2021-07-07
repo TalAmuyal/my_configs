@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e # Stop on first error
+
 # Sets up a fresh OS install
 # Intended to be used on Ubuntu 17.04+ or Mac OS X Mojave
 
@@ -59,9 +61,7 @@ fi
 title "Installing OS packages"
 if `isOsx` ; then
 	brew tap homebrew/cask-fonts
-	brew cask install font-fira-code
-	brew cask install alacritty
-	brew install watch git zsh tmux pyenv exa node yarn neovim
+	brew install alacritty font-fira-code watch git zsh tmux pyenv exa node yarn neovim tree
 fi
 
 if `isLinux` ; then
@@ -84,36 +84,30 @@ if `isLinux` ; then
 	fi
 fi
 
-pyenv install $GLOBAL_PYTHON_VERSION
+GLOBAL_PYTHON=~/.pyenv/versions/$GLOBAL_PYTHON_VERSION/bin/python
+hash $GLOBAL_PYTHON 2>/dev/null || pyenv install $GLOBAL_PYTHON_VERSION
 
-install_pipx() {
-	title "Installing pipx"
-
-	PIPX_ENV_DIR=~/.local/pipx_python_env
-	mkdir -p $PIPX_ENV_DIR
-	pushd $PIPX_ENV_DIR
-	pyenv local $GLOBAL_PYTHON_VERSION
-	python -m venv $PIPX_ENV_DIR/.venv
-	bash -c "source .venv/bin/activate && python -m pip install pipx"
-	popd
-}
-hash pipx 2>/dev/null || install_pipx()
-
-title "Installing Python applications"
-pipx install userpath
-
-pipx install python-language-server
-pipx inject python-language-server pyls-mypy
-
-pipx install xonsh
-pipx inject xonsh prompt-toolkit
-
-pipx install pipenv
-pipx install ptpython
+PIPX_ENV_DIR=~/.local/pipx_python_env
+PIPX=$PIPX_ENV_DIR/bin/pipx
+hash pipx 2>/dev/null || ( \
+	title "Installing pipx" \
+	&& $GLOBAL_PYTHON -m venv $PIPX_ENV_DIR \
+	&& bash -c "source $PIPX_ENV_DIR/bin/activate && python -m pip install pipx" \
+)
 
 title "Setting PATH"
-userpath append ~/.local/bin
-userpath append ~/.local/MyConfigs/aliases
+P=~/.local/bin               && $PIPX run userpath verify $P 1>/dev/null 2>/dev/null || $PIPX run userpath append $P
+P=~/.local/MyConfigs/aliases && $PIPX run userpath verify $P 1>/dev/null 2>/dev/null || $PIPX run userpath append $P
+
+title "Installing Python applications"
+hash pyls 2>/dev/null || ( \
+	$PIPX install python-language-server \
+	&& $PIPX inject python-language-server pyls-mypy \
+)
+hash xonsh 2>/dev/null || ( \
+	$PIPX install xonsh \
+	&& $PIPX inject xonsh prompt-toolkit \
+)
 
 title "Setting symlinks"
 linkItem "Fonts directory"                            ~/.fonts                           "fonts"
