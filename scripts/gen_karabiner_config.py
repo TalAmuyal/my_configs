@@ -1,93 +1,140 @@
-#!/usr/bin/env python3
-
+import dataclasses
 import json
-import os
+import pathlib
 
 
-ctrl_to_cmd_mappings = [
-    ('copy', 'c'),
-    ('cut', 'x'),
-    ('paste', 'v'),
-    ('undo', 'z'),
-    ('select-all', 'a'),
-    ('save', 's'),
-    ('reload(Ctrl+R)', 'r'),
-    ('new tab', 't'),
-    ('find', 'f'),
-    ('slack-search / Google Docs link', 'k'),
-    ('bold', 'b'),
-    ('underline', 'u'),
-    ('italics', 'i'),
-    ('end-of-line', 'right_arrow'),
-    ('start-of-line', 'left_arrow'),
-]
+@dataclasses.dataclass(frozen=True)
+class Acl:
+    instruction: str
+    patterns: tuple[str, ...]
 
-EXAMPTION_APPS = [
+
+"""
+class OnlyFor(Acl):  # WHITE_LIST
+    def __init__(self, *patterns: str) -> None:
+        super().__init__(
+            instruction="frontmost_application_if",
+            patterns=patterns,
+        )
+"""
+
+
+class ExceptFor(Acl):  # BLACK_LIST
+    def __init__(self, *patterns: str) -> None:
+        super().__init__(
+            instruction="frontmost_application_unless",
+            patterns=patterns,
+        )
+
+
+r"""
+map_only_for_browsers = OnlyFor(
+    r"^org\.mozilla\.firefox$",
+    r"^com\.google\.Chrome$",
+    r"^com\.apple\.Safari$",
+)
+"""
+
+map_except_for_terminals = ExceptFor(
     r"^com\.apple\.Terminal$",
     r"^com\.googlecode\.iterm2$",
     r"^co\.zeit\.hyperterm$",
     r"^co\.zeit\.hyper$",
     r"alacritty",
+    r"kitty",
     r"oni",
     r"veonim",
-]
-
-BROWSERS = [
-    r'^org\.mozilla\.firefox$',
-    r'^com\.google\.Chrome$',
-    r'^com\.apple\.Safari$',
-]
+)
 
 
-class ACL:
-    WHITE_LIST = 'frontmost_application_if'
-    BLACK_LIST = 'frontmost_application_unless'
+@dataclasses.dataclass(frozen=True)
+class ModKeyMapping:
+    description: str
+    key: str
+    from_mod_keys: tuple[str, ...]
+    to_mod_key: str
+    acl: Acl
+
+    def make_rules(self) -> list[dict]:
+        return [
+            self._make_rule(
+                form_mod_key,
+                "any",
+            )
+            for form_mod_key in self.from_mod_keys
+        ]
+
+    def _make_rule(
+        self,
+        from_mandatory: str,
+        from_optional: str,
+    ) -> dict:
+        condition = {
+            "type": self.acl.instruction,
+            "bundle_identifiers": self.acl.patterns,
+        }
+        manipulator = {
+            "conditions": [condition],
+            "type": "basic",
+        }
+        manipulator.update(
+            map_key(
+                key=self.key,
+                from_mandatory=from_mandatory,
+                from_optional=from_optional,
+                to_modifier=self.to_mod_key,
+            )
+        )
+        rule = {
+            "description": self.description,
+            "manipulators": [manipulator],
+        }
+        return rule
 
 
-class DIR:
-    FROM = 'from'
-    TO = 'to'
-
-
-def make_rule(
+class CtrlMapping(ModKeyMapping):
+    def __init__(
+        self,
         description: str,
         key: str,
-        from_mandatory,
-        from_optional,
-        to_modifier,
-        acl: str,
-        apps_list: str,
-        ):
-    condition = {
-        'bundle_identifiers': apps_list,
-        'type': acl,
-    }
-    manipulator = {
-        'conditions': [condition],
-        'type': 'basic',
-    }
-    manipulator.update(map_key(
-        key=key,
-        from_mandatory=from_mandatory,
-        from_optional=from_optional,
-        to_modifier=to_modifier,
-    ))
-    rule = {
-        'description': description,
-        'manipulators': [manipulator],
-    }
-    return rule
+    ) -> None:
+        super().__init__(
+            description=description,
+            key=key,
+            from_mod_keys=(
+                "left_control",
+                "right_control",
+                "control",
+            ),
+            to_mod_key="left_command",
+            acl=map_except_for_terminals,
+        )
+
+
+class AltMapping(ModKeyMapping):
+    def __init__(
+        self,
+        description: str,
+        key: str,
+    ) -> None:
+        super().__init__(
+            description=description,
+            key=key,
+            from_mod_keys=("option", "left_option", "right_option"),
+            to_mod_key="left_command",
+            acl=map_except_for_terminals,
+        )
 
 
 def make_compund_key(
-        key: str,
-        modifiers=None,
-        ):
+    key: str,
+    modifiers=None,
+) -> dict:
     if type(modifiers) is list:
         modifiers = [m for m in modifiers if m]
-    ck = {'key_code': key}
+    ck = {"key_code": key}
     if modifiers:
-        ck['modifiers'] = modifiers
+        ck["modifiers"] = modifiers
     return ck
 
 
@@ -96,88 +143,101 @@ def listify(x, should):
 
 
 def map_key(
-        key: str,
-        from_mandatory=None,
-        from_optional=None,
-        to_modifier=None,
-        listify_to=True,
-        ):
-    from_kvs = {('mandatory', from_mandatory), ('optional', from_optional)}
+    key: str,
+    from_mandatory=None,
+    from_optional=None,
+    to_modifier=None,
+    listify_to=True,
+) -> dict:
+    from_kvs = {("mandatory", from_mandatory), ("optional", from_optional)}
     from_modifiers = {k: [v] for k, v in from_kvs if v is not None}
     mapping = {
-        DIR.FROM: make_compund_key(key, from_modifiers),
-        DIR.TO: listify(make_compund_key(key, [to_modifier]), listify_to),
+        "from": make_compund_key(key, from_modifiers),
+        "to": listify(make_compund_key(key, [to_modifier]), listify_to),
     }
     return mapping
 
 
-def map_ctrl_to_cmd(
-        description: str,
-        letter: str,
-        acl: str,
-        apps_list: str,
-        ):
-    return make_rule(
-        description,
-        letter,
-        'control',
-        'any',
-        'left_command',
-        acl,
-        apps_list,
-    )
-
-
-def reset_f_key(n):
-    return map_key(f'f{n}', listify_to=False)
-
-
-rules = [
-    map_ctrl_to_cmd(d, l, ACL.BLACK_LIST, EXAMPTION_APPS)
-    for d, l in ctrl_to_cmd_mappings
-] + [map_ctrl_to_cmd('open location', 'l', ACL.WHITE_LIST, BROWSERS)] + [
-    make_rule(
-        d,
-        l,
-        'option',
-        'any',
-        'left_command',
-        ACL.WHITE_LIST,
-        BROWSERS,
-    )
-    for d, l in (('Back', 'left_arrow'), ('Forward', 'right_arrow'))
+mappings: list[ModKeyMapping] = [
+    CtrlMapping("copy", "c"),
+    CtrlMapping("cut", "x"),
+    CtrlMapping("paste", "v"),
+    CtrlMapping("undo", "z"),
+    CtrlMapping("select-all", "a"),
+    CtrlMapping("save", "s"),
+    CtrlMapping("reload(Ctrl+R)", "r"),
+    CtrlMapping("new tab", "t"),
+    CtrlMapping("find", "f"),
+    CtrlMapping("slack-search / Google Docs link", "k"),
+    CtrlMapping("bold", "b"),
+    CtrlMapping("underline", "u"),
+    CtrlMapping("italics", "i"),
+    CtrlMapping("end-of-line", "right_arrow"),
+    CtrlMapping("start-of-line", "left_arrow"),
+    CtrlMapping("Open location", "l"),
+    CtrlMapping("Ctrl+Enter", "return_or_enter"),
+    AltMapping("Back", "left_arrow"),
+    AltMapping("Forward", "right_arrow"),
 ]
 
-
 profile = {
-    'name': 'My profile',
-    'selected': True,
-    'simple_modifications': [],
-    'complex_modifications': {
-        'parameters': {
-            'basic.simultaneous_threshold_milliseconds': 50,
-            'basic.to_delayed_action_delay_milliseconds': 500,
-            'basic.to_if_alone_timeout_milliseconds': 1000,
-            'basic.to_if_held_down_threshold_milliseconds': 500,
+    "name": "My profile",
+    "selected": True,
+    "simple_modifications": [
+        {
+            "from": {
+                "key_code": "caps_lock",
+            },
+            "to": [
+                {
+                    "key_code": "left_control",
+                },
+            ],
         },
-        'rules': rules,
+        {
+            "from": {
+                "key_code": "grave_accent_and_tilde",
+            },
+            "to": [
+                {
+                    "key_code": "non_us_backslash",
+                },
+            ],
+        },
+    ],
+    "complex_modifications": {
+        "parameters": {
+            "basic.simultaneous_threshold_milliseconds": 50,
+            "basic.to_delayed_action_delay_milliseconds": 500,
+            "basic.to_if_alone_timeout_milliseconds": 1000,
+            "basic.to_if_held_down_threshold_milliseconds": 500,
+        },
+        "rules": [
+            rule
+            for mapping in mappings
+            for rule in mapping.make_rules()
+        ],
     },
-    'fn_function_keys': [reset_f_key(i + 1) for i in range(12)],
-    'devices': [],
-    'virtual_hid_keyboard': {'country_code': 0},
+    "fn_function_keys": [
+        map_key(
+            f"f{i + 1}",
+            listify_to=False)
+        for i in range(12)
+    ],
+    "devices": [],
+    "virtual_hid_keyboard": {"country_code": 0},
 }
 
 
 config = {
-    'global': {
-        'check_for_updates_on_startup': True,
-        'show_in_menu_bar': True,
-        'show_profile_name_in_menu_bar': False,
+    "global": {
+        "check_for_updates_on_startup": True,
+        "show_in_menu_bar": True,
+        "show_profile_name_in_menu_bar": False,
     },
-    'profiles': [profile],
+    "profiles": [profile],
 }
 
-CONFIG_FILE_PATH = os.path.expanduser('~/.config/karabiner/karabiner.json')
-with open(CONFIG_FILE_PATH, 'w') as f:
-    json.dump(config, f, sort_keys=True, indent=4)
-
+configs_dir = pathlib.Path.home() / ".config"
+config_file = configs_dir / "karabiner/karabiner.json"
+config_file.write_text(json.dumps(config, sort_keys=False, indent=4))

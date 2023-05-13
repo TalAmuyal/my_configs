@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+~/.local/python_venvs/black/bin/python -m black "$@"

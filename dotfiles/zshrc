@@ -25,6 +25,8 @@ promptinit
 # Turn on parameter expansion on prompt
 setopt PROMPT_SUBST
 
+INITIAL_WD="$(pwd -P)"
+
 function get_custom_path {
 	p="$(pwd -P)"
 	home="$(cd ~ && pwd -P)"
@@ -40,6 +42,15 @@ function get_custom_path {
 	elif [[ $p == $home/workspace/* ]] ; then
 		prefix="$home/workspace/"
 		p=${p:${#prefix}}
+	elif [[ $p == $INITIAL_WD ]] ; then
+		p=""
+	elif [[ $p == $INITIAL_WD/* ]] ; then
+		prefix="$INITIAL_WD/"
+		p=${p:${#prefix}}
+	fi
+
+	if [[ $p == $HOME* ]]; then
+		p="~${p#$HOME}"
 	fi
 
 	echo -n $p
@@ -92,15 +103,13 @@ function prompt_left {
 	echo -n $' > '
 }
 
-function prompt_right {
-#	prompt_start
-#	prompt_git
-#	prompt_terminate
-}
-
 PROMPT='$(prompt_left)'
-#RPROMPT='$(prompt_right)'
+
 # === ===
+
+ASDF_VM_DIR=$HOME/.local/asdf
+[[ -e "$ASDF_VM_DIR" ]] && source $ASDF_VM_DIR/asdf.sh && fpath=(${ASDF_VM_DIR}/completions $fpath)
+unset ASDF_VM_DIR
 
 # Command completion
 autoload -Uz compinit
@@ -136,10 +145,6 @@ else
 	fi
 fi
 
-if hash ptpython 2>/dev/null; then
-	alias ipython='ptpython'
-fi
-
 alias rrr='source ~/.zshrc'
 
 alias grep='grep --color=auto'
@@ -165,11 +170,6 @@ export EDITOR="$VISUAL"
 
 export PIP_REQUIRE_VIRTUALENV=true
 
-[[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
+emulate sh -c 'source ~/.profile'
 
-generate_completion_files_detached() {
-	setopt local_options no_notify no_monitor
-	eval "$(pipenv --completion)" &
-	eval "$(_FORTER_COMPLETE=source_zsh forter)" &
-}
-generate_completion_files_detached
+[[ -f .venv/bin/activate ]] && source .venv/bin/activate
