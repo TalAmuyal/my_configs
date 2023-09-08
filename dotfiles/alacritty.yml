@@ -8,6 +8,9 @@ window:
   # The value `0.0` is completely transparent and `1.0` is opaque.
   opacity: 0.8
 
+env:
+  TERM: xterm-256color
+
 scrolling:
   history: 0
 
@@ -69,7 +72,7 @@ schemes:
       cyan:    '0x93a1a1' # base1
       white:   '0xfdf6e3' # base3
 
-colors: *dark
+colors: *light
 
 # Visual Bell
 #

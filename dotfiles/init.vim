@@ -18,6 +18,7 @@ Plug 'nvim-lua/plenary.nvim'  " LUA utils, required by telescope
 Plug 'sharkdp/fd'  " "find" replacment, required by telescope
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
 Plug 'iCyMind/NeoSolarized'
+Plug 'shaunsingh/solarized.nvim'
 Plug 'wellle/targets.vim'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'tpope/vim-surround'
@@ -53,10 +54,10 @@ autocmd BufReadCmd *.egg,*.whl,*.jar,*.xpi call zip#Browse(expand("<amatch>"))
 " Set Groovy indentation
 autocmd FileType groovy setlocal shiftwidth=4 softtabstop=4 expandtab
 
-if s:non_work_instance
+"if s:non_work_instance
 	imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
 	let g:copilot_no_tab_map = v:true
-endif
+"endif
 
 
 autocmd TextYankPost * silent! lua vim.highlight.on_yank({timeout=200})
@@ -292,13 +293,21 @@ syntax enable
 " Set a custom color-scheme based on the time of day
 colorscheme NeoSolarized
 func SelectBackground(timer)
-	let hr = (strftime('%H'))
-	if 19 > hr && hr > 8
+	let theme_mode = trim(system('print_theme_mode'))
+	if theme_mode == 'light-mode'
 		set background=light
-	else
+	elseif theme_mode == 'dark-mode'
 		set background=dark
+		highlight LineNr       guibg=#073642
+		highlight CursorLine   guibg=#073642
+		highlight CursorLineNr guibg=#002b36
 	endif
-	"hi Normal guibg=NONE ctermbg=NONE <- Transparency
+
+	" "*bg=NONE" means "transparent"
+	highlight Normal       guibg=NONE
+	highlight NonText      guibg=NONE
+	highlight SpellBad                   ctermbg=001       ctermfg=007
+
 endfunc
 let theme_timer = timer_start(60 * 1000, 'SelectBackground', {'repeat': -1})
 call SelectBackground(theme_timer)

@@ -1,0 +1,12 @@
+
+if [ "$(uname)" == "Darwin" ]; then
+	defaults read -globalDomain AppleInterfaceStyle &> /dev/null && echo dark-mode || echo light-mode
+	exit 0
+fi
+
+current_hour=$(date +%H)
+if [[ $current_hour -ge 8 && $current_hour -lt 19 ]]; then
+    echo light-mode
+else
+    echo dark-mode
+fi

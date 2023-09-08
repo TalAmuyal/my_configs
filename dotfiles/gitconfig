@@ -10,12 +10,27 @@
 	amend = commit --amend --no-edit
 	glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 [core]
-	pager = less -x1,5
+	#pager = delta
+	pager = delta --features "$(print_theme_mode)"
+	#pager = less -x1,5
 	editor = nvim
 	excludesfile = ~/.gitignore
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	line-numbers = true
+	side-by-side = true
+	navigate = true  # use n and N to move between diff sections
+[delta "light-mode"]
+  light = true
+[delta "dark-mode"]
+  light = false
 [diff]
+	colorMoved = default
+	true-color = always
 	tool = vimdiff
 [merge]
+	conflictstyle = diff3
 	tool = vimdiff
 [mergetool]
 	path = nvim
@@ -23,7 +38,7 @@
 	default = current
 	followTags = true
 [status]
-    showUntrackedFiles = all
+	showUntrackedFiles = all
 [grep]
 	lineNumber = true
 [filter "lfs"]

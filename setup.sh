@@ -100,6 +100,8 @@ if `isLinux` ; then
 	sudo apt install --assume-yes xsel git zsh tmux scrot python3 i3 pinta pavucontrol curl blueman alacritty
 	echo "TODO: Install exa (Using nix?)"
 
+	echo "TODO: Install git-delta (https://dandavison.github.io/delta/installation.html)"
+
 	if ! hash nvim 2>/dev/null; then
 		title "Installing NeoVim"
 		curl -L https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -O /tmp/nvim.appimage
