@@ -273,7 +273,7 @@ set diffopt+=vertical
 " Enable spell checking
 set spell spelllang=en_us
 
-"highlight SpellBad ctermbg=001 ctermfg=007
+highlight SpellBad ctermbg=001 ctermfg=007
 
 " Remove compiled (and other) files form auto-complete
 set wildignore+=*/tmp/*
