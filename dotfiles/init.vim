@@ -11,14 +11,11 @@ let s:non_work_instance = !s:work_instance
 
 " Collect plugins
 call plug#begin('~/.vim/plugged')
-if s:non_work_instance
-	Plug 'github/copilot.vim'
-endif
+Plug 'github/copilot.vim'
 Plug 'nvim-lua/plenary.nvim'  " LUA utils, required by telescope
 Plug 'sharkdp/fd'  " "find" replacment, required by telescope
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+Plug 'nvim-telescope/telescope.nvim'
 Plug 'iCyMind/NeoSolarized'
-Plug 'shaunsingh/solarized.nvim'
 Plug 'wellle/targets.vim'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'tpope/vim-surround'
@@ -26,7 +23,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dadbod'
 Plug 'sheerun/vim-polyglot'
 Plug 'cespare/vim-toml'  " Support for highlighting toml filetype
-Plug 'psf/black'
 "
 "LSP
 Plug 'neovim/nvim-lspconfig'
@@ -43,6 +39,7 @@ Plug 'mfussenegger/nvim-dap-python'
 "
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " After installation, run :TSInstall python
 Plug 'wsdjeg/vim-fetch'
+Plug 'rmagatti/auto-session'
 call plug#end()
 
 " Set syntax of specific file name to specific file type
@@ -63,6 +60,8 @@ autocmd FileType groovy setlocal shiftwidth=4 softtabstop=4 expandtab
 autocmd TextYankPost * silent! lua vim.highlight.on_yank({timeout=200})
 
 let g:black_linelength = s:work_instance ? 120 : 79
+let g:black_virtualenv = "~/.local/python_venvs/black"
+let g:black_target_version = "py310"
 "autocmd BufWritePre *.py execute ':Black'
 
 
@@ -191,7 +190,21 @@ vim.api.nvim_set_keymap('n', '<leader>ssh', [[<cmd>Lspsaga signature_help<CR>]],
 vim.api.nvim_set_keymap('n', '<leader>gnd', [[<cmd>Lspsaga diagnostic_jump_next<CR>]], { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<leader>cs', [[<cmd>vsp ~/Documents/Private/cheat_sheet.md<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>vs', [[<cmd>vsp ~/.local/MyConfigs/dotfiles/init.vim<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>vs', [[<cmd>vsp ~/.local/my_configs/dotfiles/init.vim<CR>]], { noremap = true, silent = true })
+
+-- Formatting JSON
+vim.api.nvim_set_keymap('n', '<leader>fj', [[<cmd>%!python -m json.tool --no-ensure-ascii<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', '<leader>fj', [[:!python -m json.tool --no-ensure-ascii<CR>]], { noremap = true, silent = true })
+
+-- Formatting Python
+local black_command = string.format(
+  [[%s/bin/python -m black -q --line-length=%d --target-version=%s -]],
+  vim.g.black_virtualenv,
+  vim.g.black_linelength,
+  vim.g.black_target_version
+)
+vim.api.nvim_set_keymap('n', '<leader>fp', [[:%!]] .. black_command .. [[<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', '<leader>fp', [[:!]] .. black_command .. [[<CR>]], { noremap = true, silent = true })
 
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
@@ -200,6 +213,16 @@ vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 -- Other shortcuts
 vim.api.nvim_set_keymap('i', '<C-p>', [[<C-r>+]], { noremap = true, silent = true })
 
+
+-- Setup session manager
+vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+local auto_session = require("auto-session")
+auto_session.setup {
+    log_level = "error",
+    auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
+    auto_save_enabled = true,
+    auto_restore_enabled = true,
+}
 EOF
 
 " Required for operations modifying multiple buffers like rename

@@ -33,3 +33,4 @@ brew "ripgrep"  # Needed for Neovim's Telescope plugin
 cask "alacritty"
 cask "font-fira-code"
 cask "karabiner-elements"
+cask "dasel"

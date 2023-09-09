@@ -30,7 +30,6 @@
 	true-color = always
 	tool = vimdiff
 [merge]
-	conflictstyle = diff3
 	tool = vimdiff
 [mergetool]
 	path = nvim

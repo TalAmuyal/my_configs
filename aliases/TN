@@ -2,4 +2,33 @@
 
 set -e
 
-T new -ds "$@"
+
+if [[ "$1" == "" || "$1" == "-h" || "$1" == "--help" ]]; then
+	echo "Usage: $(basename $0) NAME [DIR_PATH] [COMMAND]"
+	echo "Open nvim in a new tmux session with a specific name and dir-path."
+	echo "If the dir-path has a .venv folder, it will be activated."
+	echo "If the dir-path is not provided, it will default to the current directory."
+	echo "If the command is not provided, it will default to nvim."
+	exit 0
+fi
+
+NAME="$1"
+
+# Make sure that NAME contains only alphanumeric characters and dashes, and doesn't start with a dash
+if [[ ! "$NAME" =~ ^[a-zA-Z0-9-]+$ || "$NAME" =~ ^- ]]; then
+    echo "Invalid name. It should be a one-word string with alphanumeric characters and dashes, not starting with a dash."
+    exit 1
+fi
+
+DIR_PATH="${2:-$(pwd)}"
+if [ ! -d "$DIR_PATH" ]; then
+	echo "Invalid directory path."
+	exit 1
+fi
+
+COMMAND="${3:-nvim}"
+if [ -e "$DIR_PATH/.venv" ]; then
+    COMMAND="source $DIR_PATH/.venv/bin/activate && $COMMAND"
+fi
+
+T new -ds "$NAME" -c "$DIR_PATH" "$COMMAND"

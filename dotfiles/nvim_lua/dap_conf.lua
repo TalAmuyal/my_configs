@@ -1,7 +1,9 @@
 local util = require("util")
 
-local virt_env = util.get_python_virt_env()
-if not virt_env then return end
+local home_directory = vim.fn.expand("~")
+local python_path = home_directory .. "/.local/python_venvs/debugpy/bin/python"
+if not vim.fn.executable(python_path) then return end
+
 
 local dap = require("dap")
 
@@ -27,7 +29,7 @@ require("nvim-dap-virtual-text").setup {
 }
 
 local dap_python = require("dap-python")
-dap_python.setup("~/.local/python_venvs/" .. virt_env .. "/bin/python")
+dap_python.setup(python_path)
 dap_python.test_runner = "pytest"
 
 local run_config = {
