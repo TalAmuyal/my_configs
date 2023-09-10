@@ -212,11 +212,35 @@ profile = {
             "basic.to_if_alone_timeout_milliseconds": 1000,
             "basic.to_if_held_down_threshold_milliseconds": 500,
         },
-        "rules": [
-            rule
-            for mapping in mappings
-            for rule in mapping.make_rules()
-        ],
+        "rules": (
+            [
+                rule
+                for mapping in mappings
+                for rule in mapping.make_rules()
+            ]
+            + [
+                {
+                    "description": "Ctrl+Shift+V to Paste",
+                    "manipulators": [
+                        {
+                            "type": "basic",
+                            "from": {
+                                "key_code": "v",
+                                "modifiers": {
+                                    "mandatory": ["control", "shift"],
+                                },
+                            },
+                            "to": [
+                                {
+                                    "key_code": "v",
+                                    "modifiers": ["command"],
+                                },
+                            ],
+                        }
+                    ],
+                },
+            ]
+        ),
     },
     "fn_function_keys": [
         map_key(
