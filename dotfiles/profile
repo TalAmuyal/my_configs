@@ -5,9 +5,8 @@ $PATH:\
 /usr/local/bin/:\
 /usr/local/sbin:\
 $HOME/.local/bin:\
-$HOME/.local/my_configs/aliases:\
-$HOME/.local/my_configs/work/bin:\
-$HOME/.local/work_configs/bin
+$HOME/.local/my_configs/alias:\
+$HOME/.local/work_configs/alias
 
 cargo_env_path="$HOME/.cargo/env"
 [[ -e "$cargo_env_path" ]] && source "$cargo_env_path"
