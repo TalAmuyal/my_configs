@@ -17,3 +17,14 @@ mkdir -p ~/.local && cd ~/.local && git clone https://github.com/TalAmuyal/my_co
 
 - Enable spell checker for comments and symbols
 - Enable Smart tabs (Tabs/spaces for indentation, spaces for alignment)
+
+
+# Handy stuff
+
+## Set SSH in .git/config
+
+```
+[remote "origin"]
+	url = git@github.com:ORG/REPO.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+```
