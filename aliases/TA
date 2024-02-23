@@ -2,4 +2,10 @@
 
 set -e
 
-T attach -t "$@"
+SESSION_NAME="$1"
+
+if [ -z "$SESSION_NAME" ]; then
+	tmux attach
+else
+	tmux attach -t "$SESSION_NAME"
+fi

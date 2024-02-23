@@ -2,7 +2,6 @@
 
 set -e
 
-
 if [[ "$1" == "" || "$1" == "-h" || "$1" == "--help" ]]; then
 	echo "Usage: $(basename $0) NAME [DIR_PATH] [COMMAND]"
 	echo "Open nvim in a new tmux session with a specific name and dir-path."
@@ -31,4 +30,4 @@ if [ -e "$DIR_PATH/.venv" ]; then
     COMMAND="source $DIR_PATH/.venv/bin/activate && $COMMAND"
 fi
 
-T new -ds "$NAME" -c "$DIR_PATH" "$COMMAND"
+tmux -f ~/.config/tmux/config new -ds "$NAME" -c "$DIR_PATH" "$COMMAND"

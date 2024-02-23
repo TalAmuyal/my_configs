@@ -2,4 +2,4 @@
 
 set -e
 
-mre python -m pytest --disable-warnings -fxvv "$@"
+python -m pytest --disable-warnings -fxvv "$@"

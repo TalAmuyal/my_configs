@@ -2,4 +2,28 @@
 
 set -e
 
-git rebase -i "HEAD~$1"
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+	echo "Usage: $(basename $0) [N]"
+	echo "Start an interactive rebase for the last N commits."
+	echo "If N is not provided, all of the commits since the branching started will participate."
+	exit 0
+fi
+
+N="$1"
+if [[ "$N" == "" ]]; then
+	DEFAULT_BRANCH=$(print_default_branch_name)
+	BRANCHING_COMMIT=$(git merge-base HEAD origin/$DEFAULT_BRANCH)
+	N=$(git rev-list --count HEAD ^$BRANCHING_COMMIT)
+elif [[ "$N" =~ ^[1-9][0-9]*$ ]]; then
+	: # Valid positive integer
+else
+	echo "Invalid argument, see $(basename $0) --help."
+	exit 1
+fi
+
+if [[ "$N" == "0" ]]; then
+	echo "Nothing to rebase."
+	exit 0
+fi
+
+git rebase -i "HEAD~$N"
