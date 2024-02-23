@@ -1,8 +1,8 @@
 # i3 config file (v4)
 
-# Mod key
+# Mod key (alt-key)
 set $mod Mod1
-#set $mod Mod4 (win-key)
+# Mod4 = win-key
 
 # Colors
 set $bg-color              #002b36
@@ -13,7 +13,7 @@ set $urgent-bg-color       #DC322F
 set $whatever-color        #00FF00
 set $block-separator-color #b58900
 
-font pango:monospace 9
+font pango:monospace 10
 
 # Thin borders
 hide_edge_borders both
@@ -24,28 +24,13 @@ new_window 1pixel
 workspace_layout tabbed
 
 # Start a terminal
-set $openTerminal "urxvt -e tmux -f ~/.config/tmux/config"
-#set $openTerminal "urxvt -e zsh"
-bindsym $mod+Return exec $openTerminal
-
-# Start Oni
-set $openOni "oni"
-bindsym $mod+Shift+Return exec $openOni
-
-# Create standard Asana sub-tasks
-set $createAsanaSubtasks xdotool type --clearmodifiers "$(printf 'FP\r\nAT\r\nDocumentation\r\nChangelog\r\nCR\r\nFR')"
-bindsym --release $mod+Shift+a exec --no-startup-id $createAsanaSubtasks
-
+bindsym $mod+Return exec "alacritty"
 
 # Kill focused window
 bindsym $mod+Shift+q kill
 
 # Start dmenu (a program launcher)
 bindsym $mod+Shift+d exec dmenu_run
-
-# Reconfigure displays
-set $reconfigureDisplays "~/Documents/MyConfigurations/tools/configure-monitors.py"
-bindsym $mod+Shift+m exec $reconfigureDisplays
 
 # change focus
 bindsym $mod+h focus left
@@ -75,60 +60,39 @@ bindsym $mod+l focus right
 #bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
-set $firefox   "1 "  
-set $chrome    "2 "  
-set $slack     "3 "  
-set $terminal1 "4   
-set $terminal2 "5   
-set $terminal3 "6   
-set $terminal4 "7   
-set $other1    "8   
-set $other2    "9   
+# Define workspaces
+set $workspace_ide             "1 "
+set $workspace_work_browser    "2 "
+set $workspace_chat            "3 "
+set $workspace_free            "4 "
+set $workspace_journal         "5 "
+set $workspace_private_browser "6 "
 
-# switch to workspace
-bindsym $mod+1 workspace $firefox
-bindsym $mod+2 workspace $chrome
-bindsym $mod+3 workspace $slack
-bindsym $mod+4 workspace $terminal1
-bindsym $mod+5 workspace $terminal2
-bindsym $mod+6 workspace $terminal3
-bindsym $mod+7 workspace $terminal4
-bindsym $mod+8 workspace $other1
-bindsym $mod+9 workspace $other2
+# Switch workspace
+bindsym $mod+1 workspace $workspace_ide
+bindsym $mod+2 workspace $workspace_work_browser
+bindsym $mod+3 workspace $workspace_chat
+bindsym $mod+4 workspace $workspace_free
+bindsym $mod+5 workspace $workspace_journal
+bindsym $mod+6 workspace $workspace_private_browser
 
-# move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace $firefox
-bindsym $mod+Shift+2 move container to workspace $chrome
-bindsym $mod+Shift+3 move container to workspace $slack
-bindsym $mod+Shift+4 move container to workspace $terminal1
-bindsym $mod+Shift+5 move container to workspace $terminal2
-bindsym $mod+Shift+6 move container to workspace $terminal3
-bindsym $mod+Shift+7 move container to workspace $terminal4
-bindsym $mod+Shift+8 move container to workspace $other1
-bindsym $mod+Shift+9 move container to workspace $other2
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $workspace_ide
+bindsym $mod+Shift+2 move container to workspace $workspace_work_browser
+bindsym $mod+Shift+3 move container to workspace $workspace_chat
+bindsym $mod+Shift+4 move container to workspace $workspace_free
+bindsym $mod+Shift+5 move container to workspace $workspace_journal
+bindsym $mod+Shift+6 move container to workspace $workspace_private_browser
 
-# reload the configuration file
+# Reload the configuration file
 #bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+
+# Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym Mod4+Shift+r restart
+
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Logout?' -b 'Logout' 'i3-msg exit'"
 
-# resize window (you can also use the mouse for that)
-#mode "resize" {
-#        # These bindings trigger as soon as you enter the resize mode
-#
-#        bindsym h resize shrink width 10 px or 10 ppt
-#        bindsym j resize grow height 10 px or 10 ppt
-#        bindsym k resize shrink height 10 px or 10 ppt
-#        bindsym l resize grow width 10 px or 10 ppt
-#
-#        # back to normal: Enter or Escape
-#        bindsym Return mode "default"
-#        bindsym Escape mode "default"
-#}
-#
-#bindsym $mod+r mode "resize"
 
 # window colors
 #                       border             background         text                 indicator
@@ -165,6 +129,5 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightne
 # Lock screen
 bindsym Mod1+Control+l exec ~/.config/i3/my-lockscreen.sh ~/.config/i3/lockscreen-center.png
 
+exec_always --no-startup-id picom -b
 exec_always --no-startup-id xsetroot -solid "#073642"
-
-exec $reconfigureDisplays

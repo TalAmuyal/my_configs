@@ -1,3 +1,5 @@
+echo light-mode
+exit 0
 
 if [ "$(uname)" == "Darwin" ]; then
 	defaults read -globalDomain AppleInterfaceStyle &> /dev/null && echo dark-mode || echo light-mode
