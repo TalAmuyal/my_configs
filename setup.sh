@@ -8,9 +8,12 @@ sudo echo "Thanks"
 # Sets up a fresh OS install
 # Intended to be used on Ubuntu, Arch, or Mac OS X
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-PYTHON_VENVS=~/.local/python_venvs  # TODO: Rename to "python_virtual_envs" and update init.vim (and maybe other files too)
+PUBLIC_CONFIGS_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+PRIVATE_CONFIGS_PATH=~/.local/work_configs
+PYTHON_VENVS=~/.local/python_venvs
 ASDF_VM_DIR=~/.local/asdf
+
+PYTHON_GLOBAL_VERSION=3.11
 
 
 is_osx() {
@@ -43,6 +46,7 @@ link_item() {
 	local target_file_path="$2"
 	local target_parent_dir="$(dirname "$target_file_path")"
 	local source_file_relative_path="$3"
+	local config_dir="${4:-$PUBLIC_CONFIGS_PATH}"
 
 	list_item "$description"
 
@@ -50,9 +54,8 @@ link_item() {
 	if [[ -L $target_file_path ]] ; then
 		rm -rf "$target_file_path"
 	fi
-	ln -s "$SCRIPT_DIR/$source_file_relative_path" "$target_file_path"
+	ln -s "$config_dir/$source_file_relative_path" "$target_file_path"
 }
-
 
 assert_app_present() {
 	app="$1"
@@ -79,6 +82,29 @@ prompt_yes_no() {
 		return $?
 	fi
 }
+
+install_python_tool() {
+	local tool_name="$1"
+	local tool_requirements_txt_path="$PUBLIC_CONFIGS_PATH/python_env_configs/$tool_name/requirements.txt"
+	local tool_env_dir="$PYTHON_VENVS/$tool_name"
+	local tool_env_python="$tool_env_dir/bin/python"
+
+	[ -e "$tool_env_dir" ] && return 0
+
+	title "Installing $tool_name" && \
+		python -m venv "$tool_env_dir" && \
+		"$tool_env_python" -m pip install -U pip && \
+		"$tool_env_python" -m pip install -r "$tool_requirements_txt_path"
+}
+
+
+title "Cloning private configs repository"
+[ -d $PRIVATE_CONFIGS_PATH ] && \
+	echo "Already cloned." || \
+	(git clone git@github.com:TalAmuyal/work_configs.git $PRIVATE_CONFIGS_PATH)
+
+source "$PRIVATE_CONFIGS_PATH/setup/is_work_machine.sh"
+
 
 title "Making default dirs"
 DEFAULT_DIRS=( "~/dev" "~/workspace" "~/science" "$PYTHON_VENVS" )
@@ -107,22 +133,15 @@ fi
 
 title "Installing OS packages"
 if `is_osx` ; then
-	brew bundle install --file=$SCRIPT_DIR/brewfile
+	brew bundle install "--file=$PUBLIC_CONFIGS_PATH/brewfile"
 elif `is_arch`; then
-	sudo pacman --noconfirm -S --needed $(comm -12 <(pacman -Slq | sort) <(sort $SCRIPT_DIR/pacmanfile))
+	sudo pacman --noconfirm -S --needed $(comm -12 <(pacman -Slq | sort) <(sort $PUBLIC_CONFIGS_PATH/pacmanfile))
 	#curl -s https://api.github.com/repos/cerebroapp/cerebro/releases/latest | jq -e '.assets.[] | select(.browser_download_url | endswith(".dmg")).browser_download_url'
 elif `is_ubuntu` ; then
-	# TODO: Make an ubuntu-compat version of a brewfile
-	#if ! hash curl 2>/dev/null; then
-	#	if `is_ubuntu` ; then
-	#		sudo apt install --assume-yes curl
-	#	fi
-	#fi
-	#assert_app_present curl
 	sudo add-apt-repository --yes ppa:mmstick76/alacritty
-	sudo apt install --assume-yes xsel git zsh tmux scrot python3 i3 pinta pavucontrol curl blueman alacritty
-	echo "TODO: Install exa (Using nix?)"
-
+	xargs -r -a "$PRIVATE_CONFIGS_PATH/aptfile" sudo apt install --assume-yes
+	assert_app_present curl
+	echo "TODO: Install exa"
 	echo "TODO: Install git-delta (https://dandavison.github.io/delta/installation.html)"
 
 	if ! hash nvim 2>/dev/null; then
@@ -137,13 +156,13 @@ fi
 	title "Installing ASDF-VM"  && \
 	git clone https://github.com/asdf-vm/asdf.git "$ASDF_VM_DIR" --branch v0.12.0
 source $ASDF_VM_DIR/asdf.sh
-ASDF_INSTALLS_DIR=$ASDF_VM_DIR/installs
+ASDF_INSTALLS_DIR=~/.asdf/installs
 
 [ ! -e "$ASDF_INSTALLS_DIR/python" ] && \
 	title "Installing Python using ASDF-VM" && \
 	asdf plugin add python && \
-	asdf install python latest:3.10  && \
-	asdf global python latest:3.10
+	asdf install python "latest:$PYTHON_GLOBAL_VERSION"  && \
+	asdf global python "latest:$PYTHON_GLOBAL_VERSION"
 
 [ ! -e "$ASDF_INSTALLS_DIR/nodejs" ] && \
 	title "Installing NodeJS using ASDF-VM" && \
@@ -151,59 +170,40 @@ ASDF_INSTALLS_DIR=$ASDF_VM_DIR/installs
 	asdf install nodejs latest:16 && \
 	asdf global nodejs latest:16
 
-PYLSP_PYTHON_VENV=$PYTHON_VENVS/pylsp
-[ ! -e "$PYLSP_PYTHON_VENV" ] && \
-	title "Installing Python LSP" && \
-	(python -m venv "$PYLSP_PYTHON_VENV" && $PYLSP_PYTHON_VENV/bin/python -m pip install -U pip python-language-server[all] pylint pylsp-mypy pyls-isort)
-
-DEBUGPY_PYTHON_VENV=$PYTHON_VENVS/debugpy
-[ ! -e "$DEBUGPY_PYTHON_VENV" ] && \
-	title "Installing DebugPy" && \
-	(python -m venv "$DEBUGPY_PYTHON_VENV" && $DEBUGPY_PYTHON_VENV/bin/python -m pip install -U pip debugpy) # For nvim DAP plugin (nvim-dap-python)
-
-NVIM_PYTHON_VENV=$PYTHON_VENVS/pynvim
-[ ! -e "$NVIM_PYTHON_VENV" ] && \
-	title "Installing Neovim Python (venv)" && \
-	python -m venv $NVIM_PYTHON_VENV && \
-	$NVIM_PYTHON_VENV/bin/python -m pip install -U pip pynvim
-
-
-if `is_osx` ; then
-	title "Cloning work repository"
-	WORK_CONFIGS_PATH=~/.local/work_configs
-	[ -d $WORK_CONFIGS_PATH ] && echo "Already cloned." || (git clone github.com/TalAmuyal/work_configs $WORK_CONFIGS_PATH)
-fi
+install_python_tool "pylsp"
+install_python_tool "debugpy"
+install_python_tool "pynvim"
 
 
 title "Setting symlinks"
-link_item "Fonts directory"                            ~/.fonts                           "fonts"
+link_item "Fonts directory" ~/.fonts "fonts"
+
 if `is_linux` ; then
-	link_item "i3wm configuration"                         ~/.config/i3/config                "dotfiles/i3-config"
-	link_item "i3wm's status-bar"                          ~/.config/i3/i3status.conf         "dotfiles/i3status-config"
-	link_item "Custom status script for i3wm's status-bar" ~/.config/i3/my-status.sh          "dotfiles/my-i3status-script.sh"
-	link_item "Custom status script for i3wm's status-bar" ~/.config/i3/my-status.py          "dotfiles/my-i3status-script.py"
-	link_item "Custom lock-screen script for i3wm"         ~/.config/i3/my-lockscreen.sh      "scripts/my-i3-lockscreen.sh"
-	link_item "Custom lock-screen image for i3wm"          ~/.config/i3/lockscreen-center.png "pictures/lockscreen-center.png"
+	link_item "i3wm configuration"                       ~/.config/i3/config                "dotfiles/i3-config"
+	link_item "i3wm status-bar"                          ~/.config/i3/i3status.conf         "dotfiles/i3status-config"
+	link_item "Custom status script for i3wm status-bar" ~/.config/i3/my-status.sh          "dotfiles/my-i3status-script.sh"
+	link_item "Custom status script for i3wm status-bar" ~/.config/i3/my-status.py          "dotfiles/my-i3status-script.py"
+	link_item "Custom lock-screen script for i3wm"       ~/.config/i3/my-lockscreen.sh      "scripts/my-i3-lockscreen.sh"
+	link_item "Custom lock-screen image for i3wm"        ~/.config/i3/lockscreen-center.png "pictures/lockscreen-center.png"
 fi
 
-link_item "tmux configuration"                         ~/.config/tmux/config              "dotfiles/tmux.conf"
-link_item "Git configuration (1/3)"                    ~/.gitconfig                       "dotfiles/gitconfig"
-link_item "Git configuration (2/3)"                    ~/.gitignore                       "dotfiles/gitignore"
-link_item "Git configuration (3/3)"                    ~/dev/.gitconfig                   "dotfiles/work-gitconfig"
-link_item "Zsh configuration"                          ~/.zshrc                           "dotfiles/zshrc"
-link_item "Global shell configuration"                 ~/.profile                         "dotfiles/profile"
-link_item "Xonsh configuration"                        ~/.xonshrc                         "dotfiles/xonshrc"
-link_item "NPM configuration"                          ~/.npmrc                           "dotfiles/npmrc"
-link_item "NeoVim configuration"                       ~/.config/nvim/init.vim            "dotfiles/init.vim"
-link_item "Alacritty configuration"                    ~/.config/alacritty/alacritty.yml  "dotfiles/alacritty.yml"
-link_item "Kitty configuration"                        ~/.config/kitty/kitty.conf         "dotfiles/kitty.conf"
+link_item "tmux configuration"         ~/.config/tmux/config             "dotfiles/tmux.conf"
+link_item "Git configuration"          ~/.gitconfig                      "dotfiles/gitconfig"
+link_item "Git global ignore"          ~/.gitignore                      "dotfiles/gitignore"
+link_item "Zsh configuration"          ~/.zshrc                          "dotfiles/zshrc"
+link_item "Global shell configuration" ~/.profile                        "dotfiles/profile"
+link_item "NPM configuration"          ~/.npmrc                          "dotfiles/npmrc"
+link_item "NeoVim configuration"       ~/.config/nvim/init.vim           "dotfiles/init.vim"
+link_item "Alacritty configuration"    ~/.config/alacritty/alacritty.yml "dotfiles/alacritty.yml"
+
+source "$PRIVATE_CONFIGS_PATH/setup/link_items.sh"
 
 if `is_osx` ; then
 	defaults write -g com.apple.swipescrolldirection -bool FALSE
 	defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$PWD/dotfiles"
 	defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
 
-	python3 "$PWD/scripts/gen_karabiner_config.py"
+	python "$PWD/scripts/gen_karabiner_config.py"
 fi
 
 title "Install vim-plug"
