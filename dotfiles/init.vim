@@ -180,17 +180,18 @@ require('lspconfig').rust_analyzer.setup({})
 -- Leader shortcuts
 vim.api.nvim_set_keymap('n', '<leader>gd', [[<cmd>lua vim.lsp.buf.definition()<CR>]], { noremap = true, silent = true })
 --vim.api.nvim_set_keymap('n', '<leader>gD', [[<cmd>lua vim.lsp.buf.declaration()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>spd', [[<cmd>Lspsaga preview_definition<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sp', [[<cmd>Lspsaga preview_definition<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>gr', [[<cmd>lua vim.lsp.buf.references()<CR>]], { noremap = true, silent = true })
 --vim.api.nvim_set_keymap('n', '<leader>gi', [[<cmd>lua vim.lsp.buf.implementation()<CR>]], { noremap = true, silent = true })
 
+vim.api.nvim_set_keymap('n', '<leader>ca',  [[<cmd>Lspsaga code_action<CR>]],               { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>rr',  [[<cmd>Lspsaga rename<CR>]],               { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>sd',  [[<cmd>Lspsaga hover_doc<CR>]],            { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>ssh', [[<cmd>Lspsaga signature_help<CR>]],       { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>gnd', [[<cmd>Lspsaga diagnostic_jump_next<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sh', [[<cmd>Lspsaga signature_help<CR>]],       { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>jn', [[<cmd>Lspsaga diagnostic_jump_next<CR>]], { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<leader>cs', [[<cmd>vsp ~/.local/work_configs/notes<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>vs', [[<cmd>vsp ~/.local/my_configs/dotfiles/init.vim<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>vc', [[<cmd>vsp ~/.local/my_configs/dotfiles/init.vim<CR>]], { noremap = true, silent = true })
 
 -- Formatting JSON
 vim.api.nvim_set_keymap('n', '<leader>fj', [[<cmd>%!python -m json.tool --no-ensure-ascii<CR>]], { noremap = true, silent = true })
