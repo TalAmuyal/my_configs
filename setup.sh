@@ -97,6 +97,36 @@ install_python_tool() {
 		"$tool_env_python" -m pip install -r "$tool_requirements_txt_path"
 }
 
+# create known_hosts and ssh config with proper permissions if missing
+[ -e ~/.ssh ] || (mkdir ~/.ssh && chmod 700 ~/.ssh)
+[ -e ~/.ssh/known_hosts ] || (touch ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts)
+[ -e ~/.ssh/config ] || (touch ~/.ssh/config && chmod 600 ~/.ssh/config)
+
+GITHUB_FINGERPRINT="SHA256:uNiVztksCsDhcc0u9e8BujQXVUpKZIDTMczCvj3tD2s"
+if ! grep -q "$GITHUB_FINGERPRINT" ~/.ssh/known_hosts; then
+	title "Adding GitHub SSH key fingerprint to known hosts"
+	echo "github.com $GITHUB_FINGERPRINT" >> ~/.ssh/known_hosts
+fi
+
+if [ ! -e ~/.ssh/github_id ]; then
+	title "Setting up GitHub SSH keys"
+	ssh-keygen -t rsa -b 4096 -C "GitHub" -f ~/.ssh/github_id
+	echo "Add the public key to GitHub:"
+	echo ""
+	cat ~/.ssh/github_id.pub
+	echo ""
+	read -p "Press enter when done"
+fi
+
+if ! grep -q "github.com" ~/.ssh/config; then
+	title "Adding GitHub SSH key to SSH config"
+	echo "Host github.com" >> ~/.ssh/config
+	echo "  IdentityFile ~/.ssh/github_id" >> ~/.ssh/config
+	echo "  User git" >> ~/.ssh/config
+	echo "  AddKeysToAgent yes" >> ~/.ssh/config
+	echo "  PreferredAuthentications publickey" >> ~/.ssh/config
+fi
+
 
 title "Cloning private configs repository"
 [ -d $PRIVATE_CONFIGS_PATH ] && \
