@@ -217,14 +217,14 @@ if `is_linux` ; then
 	link_item "Custom lock-screen image for i3wm"        ~/.config/i3/lockscreen-center.png "pictures/lockscreen-center.png"
 fi
 
-link_item "tmux configuration"         ~/.config/tmux/config             "dotfiles/tmux.conf"
-link_item "Git configuration"          ~/.gitconfig                      "dotfiles/gitconfig"
-link_item "Git global ignore"          ~/.gitignore                      "dotfiles/gitignore"
-link_item "Zsh configuration"          ~/.zshrc                          "dotfiles/zshrc"
-link_item "Global shell configuration" ~/.profile                        "dotfiles/profile"
-link_item "NPM configuration"          ~/.npmrc                          "dotfiles/npmrc"
-link_item "NeoVim configuration"       ~/.config/nvim/init.vim           "dotfiles/init.vim"
-link_item "Alacritty configuration"    ~/.config/alacritty/alacritty.yml "dotfiles/alacritty.yml"
+link_item "tmux configuration"         ~/.config/tmux/config              "dotfiles/tmux.conf"
+link_item "Git configuration"          ~/.gitconfig                       "dotfiles/gitconfig"
+link_item "Git global ignore"          ~/.gitignore                       "dotfiles/gitignore"
+link_item "Zsh configuration"          ~/.zshrc                           "dotfiles/zshrc"
+link_item "Global shell configuration" ~/.profile                         "dotfiles/profile"
+link_item "NPM configuration"          ~/.npmrc                           "dotfiles/npmrc"
+link_item "NeoVim configuration"       ~/.config/nvim/init.vim            "dotfiles/init.vim"
+link_item "Alacritty configuration"    ~/.config/alacritty/alacritty.toml "dotfiles/alacritty.toml"
 
 source "$PRIVATE_CONFIGS_PATH/setup/link_items.sh"
 
