@@ -54,9 +54,10 @@ local M = {
 	run_test_method   = function() dap_python.test_method() end,
 	toggle_breakpoint = function() dap.toggle_breakpoint()  end,
 
-	step_over = function() dap.step_over() end,
-	step_into = function() dap.step_into() end,
-	step_out  = function() dap.step_out () end,
+	step_over     = function() dap.step_over    () end,
+	step_into     = function() dap.step_into    () end,
+	step_out      = function() dap.step_out     () end,
+	run_to_cursor = function() dap.run_to_cursor() end,
 
 	continue = function() dap.continue() end,
 }
@@ -66,7 +67,8 @@ util.bind_lua_cmd("<leader>db", "require('dap_conf').toggle_breakpoint()")
 
 util.bind_lua_cmd("<leader>du", "require('dap_conf').step_over()")
 util.bind_lua_cmd("<leader>di", "require('dap_conf').step_into()")
-util.bind_lua_cmd("<leader>do", "require('dap_conf').step_out ()")
+util.bind_lua_cmd("<leader>do", "require('dap_conf').step_out()")
+util.bind_lua_cmd("<leader>dy", "require('dap_conf').run_to_cursor()")
 
 util.bind_lua_cmd("<leader>dc", "require('dap_conf').continue()")
 util.bind_lua_cmd("<leader>dr", "require('dap_conf').run_test_method()")
