@@ -83,7 +83,7 @@ prompt_yes_no() {
 	fi
 }
 
-install_python_tool() {
+install_pypi_python_tool() {
 	local tool_name="$1"
 	local tool_requirements_txt_path="$PUBLIC_CONFIGS_PATH/python_env_configs/$tool_name/requirements.txt"
 	local tool_env_dir="$PYTHON_VENVS/$tool_name"
@@ -95,6 +95,33 @@ install_python_tool() {
 		python -m venv "$tool_env_dir" && \
 		"$tool_env_python" -m pip install -U pip && \
 		"$tool_env_python" -m pip install -r "$tool_requirements_txt_path"
+}
+
+install_local_python_tool() {
+	local tool_name="$1"
+	local source_repo="$2"
+	if [ "$source_repo" != "private" ] && [ "$source_repo" != "public" ]; then
+		echo "Invalid source repo: $source_repo"
+		exit 1
+	fi
+	local repo_path=$([ "$source_repo" == "public" ] && echo "$PUBLIC_CONFIGS_PATH" || echo "$PRIVATE_CONFIGS_PATH")
+	local tool_main_script="$repo_path/python_env_configs/$tool_name/main.py"
+	local tool_requirements_txt_path="$repo_path/python_env_configs/$tool_name/requirements.txt"
+	local tool_env_dir="$PYTHON_VENVS/$tool_name"
+	local tool_env_python="$tool_env_dir/bin/python"
+	local executable_path=$HOME/.local/bin/$tool_name
+
+	[ -e "$tool_env_dir" ] && return 0
+
+	title "Installing $tool_name" && \
+		python -m venv "$tool_env_dir" && \
+		"$tool_env_python" -m pip install -U pip
+	[ -e "$tool_requirements_txt_path" ] && "$tool_env_python" -m pip install -r "$tool_requirements_txt_path"
+
+	[ ! -e "$executable_path" ] && \
+		echo "#!/bin/bash" > "$executable_path" && \
+		echo "$tool_env_python $tool_main_script \"\$@\"" >> "$executable_path" && \
+		chmod +x "$executable_path"
 }
 
 # create known_hosts and ssh config with proper permissions if missing
@@ -200,9 +227,11 @@ ASDF_INSTALLS_DIR=~/.asdf/installs
 	asdf install nodejs latest:16 && \
 	asdf global nodejs latest:16
 
-install_python_tool "pylsp"
-install_python_tool "debugpy"
-install_python_tool "pynvim"
+install_pypi_python_tool "pylsp"
+install_pypi_python_tool "debugpy"
+install_pypi_python_tool "pynvim"
+
+install_local_python_tool "ggg" "private"
 
 
 title "Setting symlinks"
