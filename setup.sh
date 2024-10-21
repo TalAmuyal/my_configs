@@ -263,6 +263,7 @@ if `is_osx` ; then
 	defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
 
 	python "$PWD/scripts/gen_karabiner_config.py"
+	link_item "Karabiner-Elements configuration" ~/.config/karabiner/karabiner.json "dotfiles/karabiner.json"
 fi
 
 title "Install vim-plug"
