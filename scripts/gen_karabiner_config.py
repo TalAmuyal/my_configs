@@ -262,6 +262,9 @@ config = {
     "profiles": [profile],
 }
 
-configs_dir = pathlib.Path.home() / ".config"
-config_file = configs_dir / "karabiner/karabiner.json"
-config_file.write_text(json.dumps(config, sort_keys=False, indent=4))
+dumped_config = json.dumps(config, sort_keys=False, indent=4)
+
+current_dir = pathlib.Path(__file__).parent.resolve()
+dotfile_dir = current_dir.parent / "dotfiles"
+dotfile_path = dotfile_dir / "karabiner.json"
+dotfile_path.write_text(dumped_config)
