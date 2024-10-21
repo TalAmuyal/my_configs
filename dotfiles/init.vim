@@ -23,6 +23,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dadbod'
 Plug 'sheerun/vim-polyglot'
 Plug 'cespare/vim-toml'  " Support for highlighting toml filetype
+Plug 'knsh14/vim-github-link'
 "
 "LSP
 Plug 'neovim/nvim-lspconfig'
@@ -34,6 +35,7 @@ Plug 'tami5/lspsaga.nvim'
 "DAP
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
+Plug 'nvim-neotest/nvim-nio'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'mfussenegger/nvim-dap-python'
 "
