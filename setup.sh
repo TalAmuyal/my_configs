@@ -224,8 +224,8 @@ ASDF_INSTALLS_DIR=~/.asdf/installs
 [ ! -e "$ASDF_INSTALLS_DIR/nodejs" ] && \
 	title "Installing NodeJS using ASDF-VM" && \
 	asdf plugin add nodejs && \
-	asdf install nodejs latest:16 && \
-	asdf global nodejs latest:16
+	asdf install nodejs latest:18 && \
+	asdf global nodejs latest:18
 
 install_pypi_python_tool "pylsp"
 install_pypi_python_tool "debugpy"
