@@ -3,6 +3,19 @@ import json
 import pathlib
 
 
+OPTION_KEYS = (
+    "option",
+    "left_option",
+    "right_option",
+)
+
+CTRL_KEYS = (
+    "left_control",
+    "right_control",
+    "control",
+)
+
+
 @dataclasses.dataclass(frozen=True)
 class Acl:
     instruction: str
@@ -57,17 +70,14 @@ class ModKeyMapping:
 
     def make_rules(self) -> list[dict]:
         return [
-            self._make_rule(
-                form_mod_key,
-                "any",
-            )
+            self._make_rule(form_mod_key)
             for form_mod_key in self.from_mod_keys
         ]
 
     def _make_rule(
         self,
         from_mandatory: str,
-        from_optional: str,
+        from_optional: str = "any",
     ) -> dict:
         condition = {
             "type": self.acl.instruction,
@@ -101,11 +111,7 @@ class CtrlMapping(ModKeyMapping):
         super().__init__(
             description=description,
             key=key,
-            from_mod_keys=(
-                "left_control",
-                "right_control",
-                "control",
-            ),
+            from_mod_keys=CTRL_KEYS,
             to_mod_key="left_command",
             acl=map_except_for_terminals,
         )
@@ -120,7 +126,7 @@ class AltMapping(ModKeyMapping):
         super().__init__(
             description=description,
             key=key,
-            from_mod_keys=("option", "left_option", "right_option"),
+            from_mod_keys=OPTION_KEYS,
             to_mod_key="left_command",
             acl=map_except_for_terminals,
         )
@@ -163,6 +169,7 @@ mappings: list[ModKeyMapping] = [
     CtrlMapping("cut", "x"),
     CtrlMapping("paste", "v"),
     CtrlMapping("undo", "z"),
+    CtrlMapping("redo", "y"),
     CtrlMapping("select-all", "a"),
     CtrlMapping("save", "s"),
     CtrlMapping("reload(Ctrl+R)", "r"),
@@ -238,7 +245,30 @@ profile = {
                             ],
                         }
                     ],
-                },
+                }
+            ]
+            + [
+                {
+                    "description": f"CMD+Option+{i} to Ctrl+Alt+{i} (GDoc H{i})",
+                    "manipulators": [
+                        {
+                            "type": "basic",
+                            "from": {
+                                "key_code": f"{i}",
+                                "modifiers": {
+                                    "mandatory": ["control", "option"],
+                                },
+                            },
+                            "to": [
+                                {
+                                    "key_code": f"{i}",
+                                    "modifiers": ["command", "option"],
+                                },
+                            ],
+                        }
+                    ],
+                }
+                for i in range(1, 10)
             ]
         ),
     },
@@ -249,7 +279,10 @@ profile = {
         for i in range(12)
     ],
     "devices": [],
-    "virtual_hid_keyboard": {"country_code": 0},
+    "virtual_hid_keyboard": {
+        "country_code": 0,
+        "keyboard_type_v2": "iso",
+    },
 }
 
 
