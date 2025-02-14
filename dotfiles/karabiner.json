@@ -61,8 +61,50 @@
                                 "from": {
                                     "key_code": "c",
                                     "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
                                         "mandatory": [
                                             "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "c",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "copy",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "c",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
                                         ],
                                         "optional": [
                                             "any"
@@ -107,48 +149,6 @@
                                             "any"
                                         ],
                                         "mandatory": [
-                                            "right_control"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "c",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "copy",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "type": "frontmost_application_unless",
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^co\\.zeit\\.hyperterm$",
-                                            "^co\\.zeit\\.hyper$",
-                                            "alacritty",
-                                            "kitty",
-                                            "oni",
-                                            "veonim"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "c",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
-                                        "mandatory": [
                                             "control"
                                         ]
                                     }
@@ -187,8 +187,50 @@
                                 "from": {
                                     "key_code": "x",
                                     "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
                                         "mandatory": [
                                             "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "x",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "cut",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "x",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
                                         ],
                                         "optional": [
                                             "any"
@@ -233,48 +275,6 @@
                                             "any"
                                         ],
                                         "mandatory": [
-                                            "right_control"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "x",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "cut",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "type": "frontmost_application_unless",
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^co\\.zeit\\.hyperterm$",
-                                            "^co\\.zeit\\.hyper$",
-                                            "alacritty",
-                                            "kitty",
-                                            "oni",
-                                            "veonim"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "x",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
-                                        "mandatory": [
                                             "control"
                                         ]
                                     }
@@ -313,8 +313,50 @@
                                 "from": {
                                     "key_code": "v",
                                     "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
                                         "mandatory": [
                                             "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "v",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "paste",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "v",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
                                         ],
                                         "optional": [
                                             "any"
@@ -359,48 +401,6 @@
                                             "any"
                                         ],
                                         "mandatory": [
-                                            "right_control"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "v",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "paste",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "type": "frontmost_application_unless",
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^co\\.zeit\\.hyperterm$",
-                                            "^co\\.zeit\\.hyper$",
-                                            "alacritty",
-                                            "kitty",
-                                            "oni",
-                                            "veonim"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "v",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
-                                        "mandatory": [
                                             "control"
                                         ]
                                     }
@@ -439,8 +439,50 @@
                                 "from": {
                                     "key_code": "z",
                                     "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
                                         "mandatory": [
                                             "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "z",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "undo",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "z",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
                                         ],
                                         "optional": [
                                             "any"
@@ -485,48 +527,6 @@
                                             "any"
                                         ],
                                         "mandatory": [
-                                            "right_control"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "z",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "undo",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "type": "frontmost_application_unless",
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^co\\.zeit\\.hyperterm$",
-                                            "^co\\.zeit\\.hyper$",
-                                            "alacritty",
-                                            "kitty",
-                                            "oni",
-                                            "veonim"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "z",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
-                                        "mandatory": [
                                             "control"
                                         ]
                                     }
@@ -565,8 +565,50 @@
                                 "from": {
                                     "key_code": "y",
                                     "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
                                         "mandatory": [
                                             "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "y",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "redo",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "y",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
                                         ],
                                         "optional": [
                                             "any"
@@ -611,48 +653,6 @@
                                             "any"
                                         ],
                                         "mandatory": [
-                                            "right_control"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "y",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "redo",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "type": "frontmost_application_unless",
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^co\\.zeit\\.hyperterm$",
-                                            "^co\\.zeit\\.hyper$",
-                                            "alacritty",
-                                            "kitty",
-                                            "oni",
-                                            "veonim"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "y",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
-                                        "mandatory": [
                                             "control"
                                         ]
                                     }
@@ -691,8 +691,50 @@
                                 "from": {
                                     "key_code": "a",
                                     "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
                                         "mandatory": [
                                             "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "a",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "select-all",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "a",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
                                         ],
                                         "optional": [
                                             "any"
@@ -737,48 +779,6 @@
                                             "any"
                                         ],
                                         "mandatory": [
-                                            "right_control"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "a",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "select-all",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "type": "frontmost_application_unless",
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^co\\.zeit\\.hyperterm$",
-                                            "^co\\.zeit\\.hyper$",
-                                            "alacritty",
-                                            "kitty",
-                                            "oni",
-                                            "veonim"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "a",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
-                                        "mandatory": [
                                             "control"
                                         ]
                                     }
@@ -817,8 +817,50 @@
                                 "from": {
                                     "key_code": "s",
                                     "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
                                         "mandatory": [
                                             "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "s",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "save",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "s",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
                                         ],
                                         "optional": [
                                             "any"
@@ -863,48 +905,6 @@
                                             "any"
                                         ],
                                         "mandatory": [
-                                            "right_control"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "s",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "save",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "type": "frontmost_application_unless",
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^co\\.zeit\\.hyperterm$",
-                                            "^co\\.zeit\\.hyper$",
-                                            "alacritty",
-                                            "kitty",
-                                            "oni",
-                                            "veonim"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "s",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
-                                        "mandatory": [
                                             "control"
                                         ]
                                     }
@@ -943,8 +943,50 @@
                                 "from": {
                                     "key_code": "r",
                                     "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
                                         "mandatory": [
                                             "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "r",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "reload(Ctrl+R)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "r",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
                                         ],
                                         "optional": [
                                             "any"
@@ -989,48 +1031,6 @@
                                             "any"
                                         ],
                                         "mandatory": [
-                                            "right_control"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "r",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "reload(Ctrl+R)",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "type": "frontmost_application_unless",
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^co\\.zeit\\.hyperterm$",
-                                            "^co\\.zeit\\.hyper$",
-                                            "alacritty",
-                                            "kitty",
-                                            "oni",
-                                            "veonim"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "r",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
-                                        "mandatory": [
                                             "control"
                                         ]
                                     }
@@ -1069,11 +1069,11 @@
                                 "from": {
                                     "key_code": "t",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -1111,11 +1111,11 @@
                                 "from": {
                                     "key_code": "t",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -1195,11 +1195,11 @@
                                 "from": {
                                     "key_code": "f",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -1237,11 +1237,11 @@
                                 "from": {
                                     "key_code": "f",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -1290,6 +1290,132 @@
                                 "to": [
                                     {
                                         "key_code": "f",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "new",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "n",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "n",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "new",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "n",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "n",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "new",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": [
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^co\\.zeit\\.hyperterm$",
+                                            "^co\\.zeit\\.hyper$",
+                                            "alacritty",
+                                            "kitty",
+                                            "oni",
+                                            "veonim"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "n",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ],
+                                        "mandatory": [
+                                            "control"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "n",
                                         "modifiers": [
                                             "left_command"
                                         ]
@@ -1321,11 +1447,11 @@
                                 "from": {
                                     "key_code": "k",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -1363,11 +1489,11 @@
                                 "from": {
                                     "key_code": "k",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -1447,11 +1573,11 @@
                                 "from": {
                                     "key_code": "b",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -1489,11 +1615,11 @@
                                 "from": {
                                     "key_code": "b",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -1573,11 +1699,11 @@
                                 "from": {
                                     "key_code": "u",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -1615,11 +1741,11 @@
                                 "from": {
                                     "key_code": "u",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -1699,11 +1825,11 @@
                                 "from": {
                                     "key_code": "i",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -1741,11 +1867,11 @@
                                 "from": {
                                     "key_code": "i",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -1825,11 +1951,11 @@
                                 "from": {
                                     "key_code": "right_arrow",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -1867,11 +1993,11 @@
                                 "from": {
                                     "key_code": "right_arrow",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -1951,11 +2077,11 @@
                                 "from": {
                                     "key_code": "left_arrow",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -1993,11 +2119,11 @@
                                 "from": {
                                     "key_code": "left_arrow",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -2077,11 +2203,11 @@
                                 "from": {
                                     "key_code": "l",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -2119,11 +2245,11 @@
                                 "from": {
                                     "key_code": "l",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -2203,11 +2329,11 @@
                                 "from": {
                                     "key_code": "return_or_enter",
                                     "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
                                         "optional": [
                                             "any"
+                                        ],
+                                        "mandatory": [
+                                            "left_control"
                                         ]
                                     }
                                 },
@@ -2245,11 +2371,11 @@
                                 "from": {
                                     "key_code": "return_or_enter",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "right_control"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -2329,11 +2455,11 @@
                                 "from": {
                                     "key_code": "left_arrow",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "option"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -2455,11 +2581,11 @@
                                 "from": {
                                     "key_code": "right_arrow",
                                     "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ],
                                         "mandatory": [
                                             "option"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
