@@ -156,24 +156,17 @@ cmp.setup.cmdline(':', {
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-function on_init (client)
-  --local file = assert(io.popen('py_print --work-dir ' .. client.config.root_dir, 'r'))
-  --local interpreter = file:read('*all'):gsub("%s+", "")
-  --file:close()
-
-  --local log_file = io.open("/Users/tal_amuyal/Desktop/lualog.txt", "a")
-  --io.output(log_file)
-  --io.write(interpreter.."\n")
-  --io.close(log_file)
-
-  client.config.settings.pylsp.plugins.jedi.environment = interpreter
-  client.notify("workspace/didChangeConfiguration")
-  return true
-end
-
 require('lspconfig')['pylsp'].setup {
   capabilities = capabilities,
-  on_init = on_init,
+  settings = {
+    pylsp = {
+      plugins = {
+        jedi = {
+          environment = vim.fn.getcwd() .. "/.venv"
+        }
+      }
+    }
+  },
 }
 
 require('lspconfig').rust_analyzer.setup({})

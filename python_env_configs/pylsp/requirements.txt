@@ -1,7 +1,7 @@
-python-lsp-server[rope]>=1.10,<1.11  # https://github.com/python-lsp/python-lsp-server
+python-lsp-server[rope]>=1.12.2,<1.13  # https://github.com/python-lsp/python-lsp-server
 
 # 3rd party plugins
 
-pylsp-rope>=0.1.11,<0.2  # https://github.com/python-rope/pylsp-rope
-pylsp-mypy>=0.6.8,<0.7  # https://github.com/Richardk2n/pylsp-mypy
-python-lsp-ruff>=2.1,<2.2  # https://github.com/python-lsp/python-lsp-ruff
+pylsp-rope>=0.1.17,<0.2  # https://github.com/python-rope/pylsp-rope
+pylsp-mypy>=0.7.0,<0.8  # https://github.com/Richardk2n/pylsp-mypy
+python-lsp-ruff>=2.2.2,<2.3  # https://github.com/python-lsp/python-lsp-ruff
