@@ -13,7 +13,7 @@ PRIVATE_CONFIGS_PATH=~/.local/work_configs
 PYTHON_VENVS=~/.local/python_venvs
 ASDF_VM_DIR=~/.local/asdf
 
-PYTHON_GLOBAL_VERSION=3.11
+PYTHON_GLOBAL_VERSION=3.12
 
 
 is_osx() {
