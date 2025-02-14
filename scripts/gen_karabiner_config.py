@@ -175,6 +175,7 @@ mappings: list[ModKeyMapping] = [
     CtrlMapping("reload(Ctrl+R)", "r"),
     CtrlMapping("new tab", "t"),
     CtrlMapping("find", "f"),
+    CtrlMapping("new", "n"),
     CtrlMapping("slack-search / Google Docs link", "k"),
     CtrlMapping("bold", "b"),
     CtrlMapping("underline", "u"),
