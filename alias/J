@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+# Join all arguments with spaces
+message="$*"
+
+# Lowercase and replace spaces with dashes
+branch=$(echo "$message" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
+git checkout -b "$branch"
+git commit -m "$message"
+git push -u origin "$branch"
