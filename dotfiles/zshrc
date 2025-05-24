@@ -173,3 +173,4 @@ export PIP_REQUIRE_VIRTUALENV=true
 emulate sh -c 'source ~/.profile'
 
 [[ -f .venv/bin/activate ]] && source .venv/bin/activate
+[[ -e ~/.nix-profile/etc/profile.d/nix.sh ]] && source ~/.nix-profile/etc/profile.d/nix.sh # added by Nix installer
