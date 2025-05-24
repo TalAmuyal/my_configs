@@ -1,3 +1,5 @@
+
+[general]
 live_config_reload = true
 
 [cursor]
@@ -15,7 +17,9 @@ history = 0
 [selection]
 save_to_clipboard = false
 
-[shell]
+[terminal]
+
+[terminal.shell]
 args = ["--login"]
 program = "/bin/zsh"
 
