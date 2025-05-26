@@ -132,10 +132,10 @@ alias -g H="--help | less"
 alias vim="nvim"
 alias ncdu="ncdu --color dark -rr -x"
 
-if hash exa 2>/dev/null; then
-	alias ls='exa'
-	alias ll='exa -l'
-	alias la='exa -la'
+if hash eza 2>/dev/null; then
+	alias ls='eza'
+	alias ll='eza -l'
+	alias la='eza -la'
 else
 	if isOsx ; then
 		alias ll="ls -lAFhtr"
