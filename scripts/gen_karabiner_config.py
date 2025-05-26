@@ -180,6 +180,7 @@ mappings: list[ModKeyMapping] = [
     CtrlMapping("bold", "b"),
     CtrlMapping("underline", "u"),
     CtrlMapping("italics", "i"),
+    CtrlMapping("Close tab", "w"),
     CtrlMapping("end-of-line", "right_arrow"),
     CtrlMapping("start-of-line", "left_arrow"),
     CtrlMapping("Open location", "l"),
