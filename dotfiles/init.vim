@@ -215,9 +215,9 @@ vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,te
 local auto_session = require("auto-session")
 auto_session.setup {
     log_level = "error",
-    auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
-    auto_save_enabled = true,
-    auto_restore_enabled = true,
+    suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
+    auto_save = true,
+    auto_restore = true,
 }
 EOF
 
