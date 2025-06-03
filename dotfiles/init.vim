@@ -91,6 +91,14 @@ EOF
 set completeopt=menu,menuone,noselect
 lua <<EOF
 
+-- General nvim configs
+
+vim.api.nvim_create_autocmd('TermOpen', {
+  callback = function()
+    vim.wo.relativenumber = true -- Enable relative line numbers
+  end,
+  group = vim.api.nvim_create_augroup('TerminalLineNumbers', { clear = true }),
+})
 
 
 -- Setup nvim-cmp.
