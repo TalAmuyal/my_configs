@@ -77,19 +77,19 @@ real_my_vim_rc = vim.fn.resolve(vim.fn.expand(my_vim_rc))
 my_lua_modules_dir = real_my_vim_rc:gsub("init.vim$", "") .. "nvim_lua"
 package.path = package.path .. ";" .. my_lua_modules_dir .. "/?.lua"
 
+
 -- Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+
 -- Load my custom configuration
 require("dap_conf")
 
-EOF
 
-" Setup nvim-cmp.
-set completeopt=menu,menuone,noselect
-lua <<EOF
+vim.o.completeopt = "menu,menuone,noselect,noinsert,popup" -- Better completion experience
+
 
 -- General nvim configs
 
@@ -101,7 +101,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
 })
 
 
--- Setup nvim-cmp.
+-- Setup nvim-cmp
 local cmp = require'cmp'
 
 cmp.setup({
