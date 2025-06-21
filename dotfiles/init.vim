@@ -180,7 +180,31 @@ require('lspconfig')['pylsp'].setup {
 
 require('lspconfig').rust_analyzer.setup({})
 
-require("CopilotChat").setup ({})
+require("CopilotChat").setup({})
+
+require("nvim-treesitter.configs").setup({
+  ensure_installed = {
+    "bash",
+    "c",
+    "diff",
+    "dockerfile",
+    "groovy",
+    "java",
+    "json",
+    "kotlin",
+    "lua",
+    "markdown",
+    "markdown_inline",
+    "python",
+    "query",
+    "rust",
+    "sql",
+    "toml",
+    "vim",
+    "vimdoc",
+    "yaml",
+  },
+})
 
 
 -- Leader shortcuts
