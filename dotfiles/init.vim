@@ -54,11 +54,6 @@ autocmd BufReadCmd *.egg,*.whl,*.jar,*.xpi call zip#Browse(expand("<amatch>"))
 " Set Groovy indentation
 autocmd FileType groovy setlocal shiftwidth=4 softtabstop=4 expandtab
 
-"if s:non_work_instance
-	imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
-	let g:copilot_no_tab_map = v:true
-"endif
-
 
 autocmd TextYankPost * silent! lua vim.highlight.on_yank({timeout=200})
 
@@ -162,10 +157,11 @@ cmp.setup.cmdline(':', {
   })
 })
 
--- Setup lspconfig.
+-- Setup lspconfig
+local lspconfig = require("lspconfig")
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-require('lspconfig')['pylsp'].setup {
+lspconfig["pylsp"].setup {
   capabilities = capabilities,
   settings = {
     pylsp = {
@@ -178,9 +174,32 @@ require('lspconfig')['pylsp'].setup {
   },
 }
 
-require('lspconfig').rust_analyzer.setup({})
+lspconfig.rust_analyzer.setup({})
 
-require("CopilotChat").setup({})
+require("CopilotChat").setup({
+  window = {
+    layout = "float",
+    width = 0.8,
+    height = 0.8,
+  }
+})
+
+vim.api.nvim_create_augroup("CopilotChatWindow", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "copilot-chat",
+  callback = function()
+    local set_line_numbers = function()
+      vim.opt_local.number = true
+      vim.opt_local.relativenumber = true
+    end
+
+    vim.keymap.set("n", "<C-c>", "<cmd>q<CR>", { buffer = true })
+
+    vim.defer_fn(set_line_numbers, 10) -- Needed to override Telescope's line numbers setting
+  end,
+  group = "CopilotChatWindow",
+})
+
 
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
@@ -207,44 +226,66 @@ require("nvim-treesitter.configs").setup({
 })
 
 
--- Leader shortcuts
-vim.api.nvim_set_keymap('n', '<leader>gd', [[<cmd>lua vim.lsp.buf.definition()<CR>]], { noremap = true, silent = true })
---vim.api.nvim_set_keymap('n', '<leader>gD', [[<cmd>lua vim.lsp.buf.declaration()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>sp', [[<cmd>Lspsaga preview_definition<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>gr', [[<cmd>lua vim.lsp.buf.references()<CR>]], { noremap = true, silent = true })
---vim.api.nvim_set_keymap('n', '<leader>gi', [[<cmd>lua vim.lsp.buf.implementation()<CR>]], { noremap = true, silent = true })
+local function set_leader_keymap(keys, command, description)
+    vim.keymap.set(
+        'n',
+        '<leader>' .. keys,
+        command,
+        { silent = true, desc = description }
+    )
+end
 
-vim.api.nvim_set_keymap('n', '<leader>ca',  [[<cmd>Lspsaga code_action<CR>]],               { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>rr',  [[<cmd>Lspsaga rename<CR>]],               { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>sd',  [[<cmd>Lspsaga hover_doc<CR>]],            { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>sh', [[<cmd>Lspsaga signature_help<CR>]],       { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>jn', [[<cmd>Lspsaga diagnostic_jump_next<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>cp', [[<cmd>CopilotChatToggle<CR>]], { noremap = true, silent = true })
+local function bind(func, arg)
+  return function() func(arg) end
+end
 
-vim.api.nvim_set_keymap('n', '<leader>cs', [[<cmd>vsp ~/.local/work_configs/notes<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>vc', [[<cmd>vsp ~/.local/my_configs/dotfiles/init.vim<CR>]], { noremap = true, silent = true })
+local function cmd_func(cmd)
+  return bind(vim.cmd, cmd)
+end
 
--- Formatting JSON
-vim.api.nvim_set_keymap('n', '<leader>fj', [[<cmd>%!python -m json.tool --no-ensure-ascii<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', '<leader>fj', [[:!python -m json.tool --no-ensure-ascii<CR>]], { noremap = true, silent = true })
+local function saga_cmd(cmd) return cmd_func("Lspsaga " .. "code_action") end
 
--- Formatting Python
-local black_command = string.format(
-  [[%s/bin/python -m black -q --line-length=%d --target-version=%s -]],
-  vim.g.black_virtualenv,
-  vim.g.black_linelength,
-  vim.g.black_target_version
-)
-vim.api.nvim_set_keymap('n', '<leader>fp', [[:%!]] .. black_command .. [[<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', '<leader>fp', [[:!]] .. black_command .. [[<CR>]], { noremap = true, silent = true })
+local telescope_cmds = require("telescope.builtin")
 
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+local my_notes_dir = "~/.local/work_configs/notes"
+local get_buffer_dir = bind(vim.fn.expand, "%:h")
 
--- Other shortcuts
-vim.api.nvim_set_keymap('i', '<C-p>', [[<C-r>+]], { noremap = true, silent = true })
+local function tele_find(search, location)
+  return function()
+    telescope_cmds[search]({
+      cwd = (type(location) == "string" and location) or location(),
+    })
+  end
+end
 
+set_leader_keymap("km", cmd_func("Telescope keymaps"),    "Show keymaps")
+
+set_leader_keymap("F",  vim.lsp.buf.format,               "LSP: Format buffer")
+set_leader_keymap("gd", vim.lsp.buf.definition,           "LSP: Go to definition")
+set_leader_keymap("gD", vim.lsp.buf.declaration,          "LSP: Go to declaration")
+set_leader_keymap("sp", saga_cmd("preview_definition"),   "LSP: Preview definition")
+set_leader_keymap("gr", vim.lsp.buf.references,           "LSP: Go to references")
+set_leader_keymap("gi", vim.lsp.buf.implementation,       "LSP: Go to implementation")
+set_leader_keymap("ca", saga_cmd("code_action"),          "LSP: Code action")
+set_leader_keymap("rr", saga_cmd("rename"),               "LSP: Rename")
+set_leader_keymap("sd", saga_cmd("hover_doc"),            "LSP: Show documentation")
+set_leader_keymap("sh", saga_cmd("signature_help"),       "LSP: Show signature help")
+set_leader_keymap("jn", saga_cmd("diagnostic_jump_next"), "LSP: Jump to next diagnostic")
+set_leader_keymap("t", cmd_func("CopilotChatOpen"),       "Copilot: Open chat")
+
+set_leader_keymap("e",  tele_find("find_files", get_buffer_dir), "Find: file in buffer directory")
+set_leader_keymap("E",  tele_find("live_grep",  get_buffer_dir), "Find: in file in buffer directory")
+set_leader_keymap("fn", tele_find("find_files", my_notes_dir),   "Find: Note")
+set_leader_keymap("fN", tele_find("live_grep",  my_notes_dir),   "Find: In note")
+set_leader_keymap("ff", tele_find("find_files", vim.fn.getcwd),  "Find: file in work directory")
+set_leader_keymap("fF", tele_find("live_grep",  vim.fn.getcwd),  "Find: in file in work directory")
+
+-- Insert mode
+vim.keymap.set("i", "<C-p>", [[<C-r>+]], { desc = "Paste from clipboard" })
+vim.keymap.set("i", "<C-c>", "<Esc>",    { desc = "Exit insert mode" })
+vim.keymap.set("i", "<C-J>", "copilot#Accept('')", { expr = true, replace_keycodes = false })
+vim.keymap.set("i", "<C-M>", "<Plug>(copilot-accept-word)")
+vim.g.copilot_no_tab_map = true
 
 -- Setup session manager
 vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
@@ -259,10 +300,6 @@ EOF
 
 " Required for operations modifying multiple buffers like rename
 set hidden
-
-" <leader>e -- Edit file, starting in same directory as current file
-nnoremap <leader>e :edit <C-R>=expand('%:h') . '/'<CR>
-nnoremap <leader>E :edit <C-R>=expand('%:p:h') . '/'<CR>
 
 set inccommand=nosplit
 
@@ -306,6 +343,10 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
+
+" Map H to go to previous tab and L to go to next tab
+nnoremap H gT
+nnoremap L gt
 
 " New tab: Control-T
 nnoremap <C-T> :tabnew<CR>
