@@ -62,15 +62,4 @@ local M = {
 	continue = function() dap.continue() end,
 }
 
-util.bind_lua_cmd("<leader>dt", "require('dap_conf').toggle_on_off()")
-util.bind_lua_cmd("<leader>db", "require('dap_conf').toggle_breakpoint()")
-
-util.bind_lua_cmd("<leader>du", "require('dap_conf').step_over()")
-util.bind_lua_cmd("<leader>di", "require('dap_conf').step_into()")
-util.bind_lua_cmd("<leader>do", "require('dap_conf').step_out()")
-util.bind_lua_cmd("<leader>dy", "require('dap_conf').run_to_cursor()")
-
-util.bind_lua_cmd("<leader>dc", "require('dap_conf').continue()")
-util.bind_lua_cmd("<leader>dr", "require('dap_conf').run_test_method()")
-
 return M
