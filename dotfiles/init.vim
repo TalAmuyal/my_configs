@@ -66,12 +66,14 @@ let g:black_target_version = "py310"
 set shell=zsh
 
 lua <<EOF
-
 -- Add my dotfiles repo to the runtime path
 local my_vim_rc = os.getenv("MYVIMRC")
 real_my_vim_rc = vim.fn.resolve(vim.fn.expand(my_vim_rc))
 my_lua_modules_dir = real_my_vim_rc:gsub("init.vim$", "") .. "nvim_lua"
 package.path = package.path .. ";" .. my_lua_modules_dir .. "/?.lua"
+
+local util = require("util")
+local dap_conf = require('dap_conf')
 
 
 -- Remap space as leader key
@@ -80,14 +82,9 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 
--- Load my custom configuration
-require("dap_conf")
-
+-- General nvim configs
 
 vim.o.completeopt = "menu,menuone,noselect,noinsert,popup" -- Better completion experience
-
-
--- General nvim configs
 
 vim.api.nvim_create_autocmd('TermOpen', {
   callback = function()
@@ -98,7 +95,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
 
 
 -- Setup nvim-cmp
-local cmp = require'cmp'
+local cmp = require("cmp")
 
 cmp.setup({
   snippet = {
@@ -183,7 +180,6 @@ require("CopilotChat").setup({
     height = 0.8,
   }
 })
-
 vim.api.nvim_create_augroup("CopilotChatWindow", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "copilot-chat",
@@ -228,53 +224,60 @@ require("nvim-treesitter.configs").setup({
 
 local function set_leader_keymap(keys, command, description)
     vim.keymap.set(
-        'n',
-        '<leader>' .. keys,
+        "n",
+        "<leader>" .. keys,
         command,
-        { silent = true, desc = description }
+        { silent = true, desc = "## " .. description }
     )
 end
 
-local function bind(func, arg)
-  return function() func(arg) end
-end
-
 local function cmd_func(cmd)
-  return bind(vim.cmd, cmd)
+  return util.bind(vim.cmd, cmd)
 end
 
-local function saga_cmd(cmd) return cmd_func("Lspsaga " .. "code_action") end
+local my_notes_dir = "~/.local/work_configs/notes"
+local get_buffer_dir = util.bind(vim.fn.expand, "%:h")
+
+local function saga_cmd(cmd) return cmd_func("Lspsaga " .. cmd) end
 
 local telescope_cmds = require("telescope.builtin")
 
-local my_notes_dir = "~/.local/work_configs/notes"
-local get_buffer_dir = bind(vim.fn.expand, "%:h")
-
 local function tele_find(search, location)
-  return function()
-    telescope_cmds[search]({
-      cwd = (type(location) == "string" and location) or location(),
-    })
-  end
+	return function()
+		telescope_cmds[search]({
+			cwd = (type(location) == "string" and location) or location(),
+		})
+	end
 end
 
-set_leader_keymap("km", cmd_func("Telescope keymaps"),    "Show keymaps")
+local function prep_to_edit_current_dir()
+	vim.api.nvim_feedkeys(":edit " .. vim.fn.expand("%:h") .. "/", "n", false)
+end
 
-set_leader_keymap("F",  vim.lsp.buf.format,               "LSP: Format buffer")
-set_leader_keymap("gd", vim.lsp.buf.definition,           "LSP: Go to definition")
-set_leader_keymap("gD", vim.lsp.buf.declaration,          "LSP: Go to declaration")
-set_leader_keymap("sp", saga_cmd("preview_definition"),   "LSP: Preview definition")
-set_leader_keymap("gr", vim.lsp.buf.references,           "LSP: Go to references")
-set_leader_keymap("gi", vim.lsp.buf.implementation,       "LSP: Go to implementation")
-set_leader_keymap("ca", saga_cmd("code_action"),          "LSP: Code action")
-set_leader_keymap("rr", saga_cmd("rename"),               "LSP: Rename")
-set_leader_keymap("sd", saga_cmd("hover_doc"),            "LSP: Show documentation")
-set_leader_keymap("sh", saga_cmd("signature_help"),       "LSP: Show signature help")
-set_leader_keymap("jn", saga_cmd("diagnostic_jump_next"), "LSP: Jump to next diagnostic")
-set_leader_keymap("t", cmd_func("CopilotChatOpen"),       "Copilot: Open chat")
-
-set_leader_keymap("e",  tele_find("find_files", get_buffer_dir), "Find: file in buffer directory")
-set_leader_keymap("E",  tele_find("live_grep",  get_buffer_dir), "Find: in file in buffer directory")
+set_leader_keymap("km", cmd_func("Telescope keymaps"),           "Show keymaps")
+set_leader_keymap("F",  vim.lsp.buf.format,                      "LSP: Format buffer")
+set_leader_keymap("gd", vim.lsp.buf.definition,                  "LSP: Go to definition")
+set_leader_keymap("gD", vim.lsp.buf.declaration,                 "LSP: Go to declaration")
+set_leader_keymap("sp", saga_cmd("preview_definition"),          "LSP: Preview definition")
+set_leader_keymap("gr", vim.lsp.buf.references,                  "LSP: Go to references")
+set_leader_keymap("gi", vim.lsp.buf.implementation,              "LSP: Go to implementation")
+set_leader_keymap("ca", saga_cmd("code_action"),                 "LSP: Code action")
+set_leader_keymap("rr", saga_cmd("rename"),                      "LSP: Rename")
+set_leader_keymap("sd", saga_cmd("hover_doc"),                   "LSP: Show documentation")
+set_leader_keymap("sh", saga_cmd("signature_help"),              "LSP: Show signature help")
+set_leader_keymap("jn", saga_cmd("diagnostic_jump_next"),        "LSP: Jump to next diagnostic")
+set_leader_keymap("dt", dap_conf.toggle_on_off,                  "DAP: Toggle on/off")
+set_leader_keymap("db", dap_conf.toggle_breakpoint,              "DAP: Toggle breakpoint")
+set_leader_keymap("du", dap_conf.step_over,                      "DAP: Step over")
+set_leader_keymap("di", dap_conf.step_into,                      "DAP: Step into")
+set_leader_keymap("do", dap_conf.step_out,                       "DAP: Step out")
+set_leader_keymap("dy", dap_conf.run_to_cursor,                  "DAP: Run to cursor")
+set_leader_keymap("dc", dap_conf.continue,                       "DAP: Continue")
+set_leader_keymap("dr", dap_conf.run_test_method,                "DAP: Run test method")
+set_leader_keymap("t",  cmd_func("CopilotChatOpen"),             "Copilot: Open chat")
+set_leader_keymap("e",  prep_to_edit_current_dir,                "Edit: file in buffer directory")
+set_leader_keymap("fe", tele_find("find_files", get_buffer_dir), "Find: file in buffer directory")
+set_leader_keymap("fE", tele_find("live_grep",  get_buffer_dir), "Find: in file in buffer directory")
 set_leader_keymap("fn", tele_find("find_files", my_notes_dir),   "Find: Note")
 set_leader_keymap("fN", tele_find("live_grep",  my_notes_dir),   "Find: In note")
 set_leader_keymap("ff", tele_find("find_files", vim.fn.getcwd),  "Find: file in work directory")
