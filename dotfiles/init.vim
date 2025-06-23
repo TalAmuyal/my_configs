@@ -227,6 +227,10 @@ require("nvim-treesitter.configs").setup({
 })
 
 
+local scratch_pad = require("scratch_pad")
+scratch_pad.setup({})
+
+
 local function set_leader_keymap(keys, command, description)
     vim.keymap.set(
         "n",
@@ -304,6 +308,7 @@ set_leader_keymap("fn", tele_find("find_files", my_notes_dir),   "Find: Note")
 set_leader_keymap("fN", tele_find("live_grep",  my_notes_dir),   "Find: In note")
 set_leader_keymap("ff", tele_find("find_files", vim.fn.getcwd),  "Find: file in work directory")
 set_leader_keymap("fF", tele_find("live_grep",  vim.fn.getcwd),  "Find: in file in work directory")
+set_leader_keymap("asdf", scratch_pad.open,                      "Scratch pad: Open scratch pad")
 set_leader_keymap("ft", toggle_floaterm,                         "Term: Toggle floaterm")
 set_for_filetype("floaterm", function()
 	vim.keymap.set("n", "q",     toggle_floaterm, { silent = true, buffer = true })
