@@ -254,6 +254,15 @@ local function prep_to_edit_current_dir()
 	vim.api.nvim_feedkeys(":edit " .. vim.fn.expand("%:h") .. "/", "n", false)
 end
 
+-- Quicker window movement
+for _, key in ipairs({ "j", "k", "h", "l" }) do
+	for _, mode in ipairs({ "n", "t" }) do
+		prefix = mode == "n" and "<C-w>" or "<C-\\><C-N><C-w>"
+		vim.keymap.set(mode, "<C-" .. key .. ">", prefix .. key, { noremap = true })
+	end
+end
+
+
 set_leader_keymap("km", cmd_func("Telescope keymaps"),           "Show keymaps")
 set_leader_keymap("F",  vim.lsp.buf.format,                      "LSP: Format buffer")
 set_leader_keymap("gd", vim.lsp.buf.definition,                  "LSP: Go to definition")
@@ -342,10 +351,11 @@ nnoremap <Up>    :echoe "Use k"<CR>
 nnoremap <Down>  :echoe "Use j"<CR>
 
 " Quicker window movement
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-h> <C-w>h
-nnoremap <C-l> <C-w>l
+"nnoremap <C-j> <C-w>j
+"tnoremap <C-j> <C-\><C-N><C-w>j
+"nnoremap <C-k> <C-w>k
+"nnoremap <C-h> <C-w>h
+"nnoremap <C-l> <C-w>l
 
 " Map H to go to previous tab and L to go to next tab
 nnoremap H gT
