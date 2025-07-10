@@ -16,6 +16,7 @@ Plug 'CopilotC-Nvim/CopilotChat.nvim'
 Plug 'nvim-lua/plenary.nvim'  " LUA utils, required by telescope
 Plug 'sharkdp/fd'  " "find" replacment, required by telescope
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'voldikss/vim-floaterm'
 Plug 'iCyMind/NeoSolarized'
 Plug 'wellle/targets.vim'
 Plug 'nelstrom/vim-visual-star-search'
@@ -76,6 +77,17 @@ local util = require("util")
 local dap_conf = require('dap_conf')
 
 
+local function set_for_filetype(filetype, callback)
+	local group_name = filetype .. "Group"
+	local group = vim.api.nvim_create_augroup(group_name, { clear = true })
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = filetype,
+		callback = callback,
+		group = group,
+	})
+end
+
+
 -- Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
@@ -84,13 +96,17 @@ vim.g.maplocalleader = ' '
 
 -- General nvim configs
 
+local function set_line_numbers()
+    vim.opt_local.number = true
+    vim.opt_local.relativenumber = true
+end
+set_line_numbers()
+
 vim.o.completeopt = "menu,menuone,noselect,noinsert,popup" -- Better completion experience
 
-vim.api.nvim_create_autocmd('TermOpen', {
-  callback = function()
-    vim.wo.relativenumber = true -- Enable relative line numbers
-  end,
-  group = vim.api.nvim_create_augroup('TerminalLineNumbers', { clear = true }),
+vim.api.nvim_create_autocmd("TermOpen", {
+  callback = set_line_numbers,
+  group = vim.api.nvim_create_augroup("TerminalLineNumbers", { clear = true }),
 })
 
 
@@ -180,21 +196,9 @@ require("CopilotChat").setup({
     height = 0.8,
   }
 })
-vim.api.nvim_create_augroup("CopilotChatWindow", { clear = true })
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "copilot-chat",
-  callback = function()
-    local set_line_numbers = function()
-      vim.opt_local.number = true
-      vim.opt_local.relativenumber = true
-    end
-
-    vim.keymap.set("n", "<C-c>", "<cmd>q<CR>", { buffer = true })
-
+set_for_filetype("copilot-chat", function()
     vim.defer_fn(set_line_numbers, 10) -- Needed to override Telescope's line numbers setting
-  end,
-  group = "CopilotChatWindow",
-})
+end)
 
 
 require("nvim-treesitter.configs").setup({
@@ -254,6 +258,8 @@ local function prep_to_edit_current_dir()
 	vim.api.nvim_feedkeys(":edit " .. vim.fn.expand("%:h") .. "/", "n", false)
 end
 
+local toggle_floaterm = cmd_func("FloatermToggle")
+
 local function set_normal_and_terminal_keymap(key, command)
 	for _, mode in ipairs({ "n", "t" }) do
 		complete_command = mode == "n" and command or ("<C-\\><C-N>" .. command)
@@ -297,6 +303,12 @@ set_leader_keymap("fn", tele_find("find_files", my_notes_dir),   "Find: Note")
 set_leader_keymap("fN", tele_find("live_grep",  my_notes_dir),   "Find: In note")
 set_leader_keymap("ff", tele_find("find_files", vim.fn.getcwd),  "Find: file in work directory")
 set_leader_keymap("fF", tele_find("live_grep",  vim.fn.getcwd),  "Find: in file in work directory")
+set_leader_keymap("ft", toggle_floaterm,                         "Term: Toggle floaterm")
+set_for_filetype("floaterm", function()
+	vim.keymap.set("n", "q",     toggle_floaterm, { silent = true, buffer = true })
+	vim.keymap.set("n", "<C-j>", toggle_floaterm, { silent = true, buffer = true })
+	vim.keymap.set("t", "<C-j>", toggle_floaterm, { silent = true, buffer = true })
+end)
 
 -- Insert mode
 vim.keymap.set("i", "<C-p>", [[<C-r>+]], { desc = "Paste from clipboard" })
@@ -334,8 +346,6 @@ set ignorecase
 set smartcase
 
 set cursorline     " Highlight the current line
-set number         " Show line numbers
-set relativenumber " Make the line numbers relative to the current line
 
 " When there is no `.editorconfig` file, default to use tabs and with a width
 " of 4 characters
