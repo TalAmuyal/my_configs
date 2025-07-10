@@ -254,13 +254,19 @@ local function prep_to_edit_current_dir()
 	vim.api.nvim_feedkeys(":edit " .. vim.fn.expand("%:h") .. "/", "n", false)
 end
 
--- Quicker window movement
-for _, key in ipairs({ "j", "k", "h", "l" }) do
+local function set_normal_and_terminal_keymap(key, command)
 	for _, mode in ipairs({ "n", "t" }) do
-		prefix = mode == "n" and "<C-w>" or "<C-\\><C-N><C-w>"
-		vim.keymap.set(mode, "<C-" .. key .. ">", prefix .. key, { noremap = true })
+		complete_command = mode == "n" and command or ("<C-\\><C-N>" .. command)
+		vim.keymap.set(mode, key, complete_command)
 	end
 end
+
+-- Quicker window & tab movement
+for _, key in ipairs({ "j", "k", "h", "l" }) do
+	set_normal_and_terminal_keymap("<C-" .. key .. ">", "<C-w>" .. key)
+end
+set_normal_and_terminal_keymap("<C-S-H>", "gT")
+set_normal_and_terminal_keymap("<C-S-L>", "gt")
 
 
 set_leader_keymap("km", cmd_func("Telescope keymaps"),           "Show keymaps")
@@ -349,17 +355,6 @@ nnoremap <Left>  :echoe "Use h"<CR>
 nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up>    :echoe "Use k"<CR>
 nnoremap <Down>  :echoe "Use j"<CR>
-
-" Quicker window movement
-"nnoremap <C-j> <C-w>j
-"tnoremap <C-j> <C-\><C-N><C-w>j
-"nnoremap <C-k> <C-w>k
-"nnoremap <C-h> <C-w>h
-"nnoremap <C-l> <C-w>l
-
-" Map H to go to previous tab and L to go to next tab
-nnoremap H gT
-nnoremap L gt
 
 " New tab: Control-T
 nnoremap <C-T> :tabnew<CR>
