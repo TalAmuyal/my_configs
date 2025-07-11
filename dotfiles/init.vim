@@ -96,11 +96,12 @@ vim.g.maplocalleader = ' '
 
 -- General nvim configs
 
+vim.opt.number = true
+vim.opt.relativenumber = true
 local function set_line_numbers()
     vim.opt_local.number = true
     vim.opt_local.relativenumber = true
 end
-set_line_numbers()
 
 vim.o.completeopt = "menu,menuone,noselect,noinsert,popup" -- Better completion experience
 
