@@ -124,6 +124,7 @@ fi
 link_item "tmux configuration"         ~/.config/tmux/config              "dotfiles/tmux.conf"
 link_item "Git configuration"          ~/.gitconfig                       "dotfiles/gitconfig"
 link_item "Git global ignore"          ~/.gitignore                       "dotfiles/gitignore"
+link_item "Editor config"              ~/.editorconfig                    ".editorconfig"
 link_item "Zsh configuration"          ~/.zshrc                           "dotfiles/zshrc"
 link_item "Global shell configuration" ~/.profile                         "dotfiles/profile"
 link_item "NPM configuration"          ~/.npmrc                           "dotfiles/npmrc"
