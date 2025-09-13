@@ -1,13 +1,9 @@
-let g:python3_host_prog = '~/.local/python_venvs/pynvim/bin/python'
 
 " Install the `plug` plugin-manager if it is missing
 if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-
-let s:work_instance = getcwd() . '/' =~ '^' . $HOME . '/dev/'
-let s:non_work_instance = !s:work_instance
 
 " Collect plugins
 call plug#begin('~/.vim/plugged')
@@ -16,6 +12,7 @@ Plug 'CopilotC-Nvim/CopilotChat.nvim'
 Plug 'nvim-lua/plenary.nvim'  " LUA utils, required by telescope
 Plug 'sharkdp/fd'  " "find" replacment, required by telescope
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'voldikss/vim-floaterm'
 Plug 'iCyMind/NeoSolarized'
 Plug 'wellle/targets.vim'
@@ -36,10 +33,10 @@ Plug 'tami5/lspsaga.nvim'
 "
 "DAP
 Plug 'mfussenegger/nvim-dap'
-Plug 'rcarriga/nvim-dap-ui'
-Plug 'nvim-neotest/nvim-nio'
-Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'mfussenegger/nvim-dap-python'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'nvim-neotest/nvim-nio'
 "
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " After installation, run :TSInstall python
 Plug 'wsdjeg/vim-fetch'
@@ -58,11 +55,6 @@ autocmd FileType groovy setlocal shiftwidth=4 softtabstop=4 expandtab
 
 autocmd TextYankPost * silent! lua vim.highlight.on_yank({timeout=200})
 
-let g:black_linelength = s:work_instance ? 120 : 79
-let g:black_virtualenv = "~/.local/python_venvs/black"
-let g:black_target_version = "py310"
-"autocmd BufWritePre *.py execute ':Black'
-
 
 set shell=zsh
 
@@ -74,7 +66,26 @@ my_lua_modules_dir = real_my_vim_rc:gsub("init.vim$", "") .. "nvim_lua"
 package.path = package.path .. ";" .. my_lua_modules_dir .. "/?.lua"
 
 local util = require("util")
+
+local nvim_python_path = util.get_shebang("pynvim-python")
+if vim.fn.filereadable(nvim_python_path) == 0 then
+	error("Nvim Python virtual environment not found: `" .. nvim_python_path .. "`")
+elseif vim.fn.executable(nvim_python_path) == 0 then
+	error("Nvim Python virtual environment is not executable: `" .. nvim_python_path .. "`")
+else
+	vim.g.python3_host_prog = nvim_python_path
+end
+
 local dap_conf = require('dap_conf')
+
+local node_bin = vim.fn.system("mise where node@lts"):gsub("%s+$", "") .. "/bin/node"
+if vim.fn.filereadable(node_bin) == 0 then
+	error("Nvim Node not found: `" .. node_bin .. "`")
+elseif vim.fn.executable(node_bin) == 0 then
+	error("Nvim Node is not executable: `" .. node_bin .. "`")
+else
+	vim.g.copilot_node_command = node_bin
+end
 
 
 local function set_for_filetype(filetype, callback)
@@ -244,6 +255,15 @@ local my_notes_dir = "~/.local/work_configs/notes"
 local get_buffer_dir = util.bind(vim.fn.expand, "%:h")
 
 local function saga_cmd(cmd) return cmd_func("Lspsaga " .. cmd) end
+
+require("telescope").setup {
+    extensions = {
+        ["ui-select"] = {
+            require("telescope.themes").get_dropdown { }
+        }
+    }
+}
+require("telescope").load_extension("ui-select")
 
 local telescope_cmds = require("telescope.builtin")
 

@@ -17,3 +17,7 @@ indent_style = space
 
 [.travis.yml]
 indent_style = space
+
+[*.py]
+indent_style = space
+indent_size = 4

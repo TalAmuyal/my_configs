@@ -2,60 +2,15 @@
 
 set -euo pipefail # Stop on first error
 
-echo "This script requires root permissions."
-sudo echo "Thanks"
-
-# Sets up a fresh OS install
-# Intended to be used on Ubuntu, Arch, or Mac OS X
-
 PUBLIC_CONFIGS_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-PRIVATE_CONFIGS_PATH=~/.local/work_configs
-PYTHON_VENVS=~/.local/python_venvs
-ASDF_VM_DIR=~/.local/asdf
+WORK_CONFIGS_PATH=~/.local/work_configs
 
-PYTHON_GLOBAL_VERSION=3.12
+WORKSPACE_DIR_PATH="$HOME/workspace"
 
+source "$PUBLIC_CONFIGS_PATH/_setup/machine_ownership.sh"
+source "$PUBLIC_CONFIGS_PATH/_setup/platform.sh"
+source "$PUBLIC_CONFIGS_PATH/_setup/ui.sh"
 
-is_osx() {
-	[ `uname` == "Darwin" ]
-}
-
-is_arch() {
-	[ -f "/etc/arch-release" ]
-}
-
-is_ubuntu() {
-	[ -f "/etc/os-release" ] && grep -qi "ubuntu" /etc/os-release
-}
-
-is_linux() {
-	[ `uname` == "Linux" ]
-}
-
-title() {
-	echo
-	echo "~~~ $1 ~~~"
-}
-
-list_item() {
-	echo " - $1"
-}
-
-link_item() {
-	local description="$1"
-	local target_file_path="$2"
-	local target_parent_dir="$(dirname "$target_file_path")"
-	local source_file_relative_path="$3"
-	local config_dir="${4:-$PUBLIC_CONFIGS_PATH}"
-
-	list_item "$description"
-
-	mkdir -p "$target_parent_dir"
-	if [[ -L $target_file_path ]] ; then
-		rm -rf "$target_file_path"
-	fi
-	ln -s "$config_dir/$source_file_relative_path" "$target_file_path"
-}
 
 assert_app_present() {
 	app="$1"
@@ -68,63 +23,10 @@ assert_app_present() {
 	fi
 }
 
-prompt_yes_no() {
-	local prompt="$1"
-	local response
+echo "This script requires root permissions."
+sudo echo "Thanks"
 
-	read -p "$prompt (y/n): " response
-	if [[ "$response" =~ ^[Yy]$ ]]; then
-		return 0
-	elif [[ "$response" =~ ^[Nn]$ ]]; then
-		return 1
-	else
-		prompt_yes_no "$prompt"
-		return $?
-	fi
-}
-
-install_pypi_python_tool() {
-	local tool_name="$1"
-	local tool_requirements_txt_path="$PUBLIC_CONFIGS_PATH/python_env_configs/$tool_name/requirements.txt"
-	local tool_env_dir="$PYTHON_VENVS/$tool_name"
-	local tool_env_python="$tool_env_dir/bin/python"
-
-	[ -e "$tool_env_dir" ] && return 0
-
-	title "Installing $tool_name" && \
-		python -m venv "$tool_env_dir" && \
-		"$tool_env_python" -m pip install -U pip && \
-		"$tool_env_python" -m pip install -r "$tool_requirements_txt_path"
-}
-
-install_local_python_tool() {
-	local tool_name="$1"
-	local source_repo="$2"
-	if [ "$source_repo" != "private" ] && [ "$source_repo" != "public" ]; then
-		echo "Invalid source repo: $source_repo"
-		exit 1
-	fi
-	local repo_path=$([ "$source_repo" == "public" ] && echo "$PUBLIC_CONFIGS_PATH" || echo "$PRIVATE_CONFIGS_PATH")
-	local tool_main_script="$repo_path/python_env_configs/$tool_name/main.py"
-	local tool_requirements_txt_path="$repo_path/python_env_configs/$tool_name/requirements.txt"
-	local tool_env_dir="$PYTHON_VENVS/$tool_name"
-	local tool_env_python="$tool_env_dir/bin/python"
-	local executable_path=$HOME/.local/bin/$tool_name
-
-	[ -e "$tool_env_dir" ] && return 0
-
-	title "Installing $tool_name" && \
-		python -m venv "$tool_env_dir" && \
-		"$tool_env_python" -m pip install -U pip
-	[ -e "$tool_requirements_txt_path" ] && "$tool_env_python" -m pip install -r "$tool_requirements_txt_path"
-
-	[ ! -e "$executable_path" ] && \
-		echo "#!/bin/bash" > "$executable_path" && \
-		echo "$tool_env_python $tool_main_script \"\$@\"" >> "$executable_path" && \
-		chmod +x "$executable_path"
-}
-
-# create known_hosts and ssh config with proper permissions if missing
+# Create known_hosts and ssh config with proper permissions if missing
 [ -e ~/.ssh ] || (mkdir ~/.ssh && chmod 700 ~/.ssh)
 [ -e ~/.ssh/known_hosts ] || (touch ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts)
 [ -e ~/.ssh/config ] || (touch ~/.ssh/config && chmod 600 ~/.ssh/config)
@@ -154,33 +56,30 @@ if ! grep -q "github.com" ~/.ssh/config; then
 	echo "  PreferredAuthentications publickey" >> ~/.ssh/config
 fi
 
-
-title "Cloning private configs repository"
-[ -d $PRIVATE_CONFIGS_PATH ] && \
-	echo "Already cloned." || \
-	(git clone git@github.com:TalAmuyal/work_configs.git $PRIVATE_CONFIGS_PATH)
-
-source "$PRIVATE_CONFIGS_PATH/setup/is_work_machine.sh"
-
-
-title "Making default dirs"
-DEFAULT_DIRS=( "~/dev" "~/workspace" "~/science" "$PYTHON_VENVS" )
-for i in "${DEFAULT_DIRS[@]}"
-do
-	:
-		echo -n " - \"$i\" "
-		[ -d "$i" ] && echo "already exists" || (mkdir -p "$i" ; ([ -d "$i" ] && echo "created" || (echo "failed to create")))
-done
+if `is_work_machine` ; then
+	title "Cloning work configs repository"
+	[ -d $WORK_CONFIGS_PATH ] && \
+		echo "Already cloned." || \
+		(git clone git@github.com:TalAmuyal/work_configs.git $WORK_CONFIGS_PATH)
+elif `is_personal_machine` ; then
+	title "Making default dirs"
+	DEFAULT_DIRS=( "$WORKSPACE_DIR_PATH" )
+	for i in "${DEFAULT_DIRS[@]}"
+	do
+		:
+			echo -n " - \"$i\" "
+			[ -d "$i" ] && echo "already exists" || (mkdir -p "$i" ; ([ -d "$i" ] && echo "created" || (echo "failed to create")))
+	done
+fi
 
 
 if `is_osx` ; then
 	if ! hash brew 2>/dev/null; then
 		title "Installing Homebrew"
-		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+		eval "$(/opt/homebrew/bin/brew shellenv)"
 	fi
-fi
-
-if `is_ubuntu` ; then
+elif `is_ubuntu` ; then
 	title "Updating packages cache"
 	sudo apt update
 
@@ -196,7 +95,7 @@ elif `is_arch`; then
 	#curl -s https://api.github.com/repos/cerebroapp/cerebro/releases/latest | jq -e '.assets.[] | select(.browser_download_url | endswith(".dmg")).browser_download_url'
 elif `is_ubuntu` ; then
 	sudo add-apt-repository --yes ppa:mmstick76/alacritty
-	xargs -r -a "$PRIVATE_CONFIGS_PATH/aptfile" sudo apt install --assume-yes
+	xargs -r -a "$PUBLIC_CONFIGS_PATH/aptfile" sudo apt install --assume-yes
 	assert_app_present curl
 	echo "TODO: Install exa"
 	echo "TODO: Install git-delta (https://dandavison.github.io/delta/installation.html)"
@@ -209,30 +108,6 @@ elif `is_ubuntu` ; then
 	fi
 fi
 
-[ ! -e "$ASDF_VM_DIR" ] && \
-	title "Installing ASDF-VM"  && \
-	git clone https://github.com/asdf-vm/asdf.git "$ASDF_VM_DIR" --branch v0.12.0
-source $ASDF_VM_DIR/asdf.sh
-ASDF_INSTALLS_DIR=~/.asdf/installs
-
-[ ! -e "$ASDF_INSTALLS_DIR/python" ] && \
-	title "Installing Python using ASDF-VM" && \
-	asdf plugin add python && \
-	asdf install python "latest:$PYTHON_GLOBAL_VERSION"  && \
-	asdf global python "latest:$PYTHON_GLOBAL_VERSION"
-
-[ ! -e "$ASDF_INSTALLS_DIR/nodejs" ] && \
-	title "Installing NodeJS using ASDF-VM" && \
-	asdf plugin add nodejs && \
-	asdf install nodejs latest:18 && \
-	asdf global nodejs latest:18
-
-install_pypi_python_tool "pylsp"
-install_pypi_python_tool "debugpy"
-install_pypi_python_tool "pynvim"
-
-install_local_python_tool "ggg" "private"
-
 
 title "Setting symlinks"
 link_item "Fonts directory" ~/.fonts "fonts"
@@ -242,7 +117,7 @@ if `is_linux` ; then
 	link_item "i3wm status-bar"                          ~/.config/i3/i3status.conf         "dotfiles/i3status-config"
 	link_item "Custom status script for i3wm status-bar" ~/.config/i3/my-status.sh          "dotfiles/my-i3status-script.sh"
 	link_item "Custom status script for i3wm status-bar" ~/.config/i3/my-status.py          "dotfiles/my-i3status-script.py"
-	link_item "Custom lock-screen script for i3wm"       ~/.config/i3/my-lockscreen.sh      "scripts/my-i3-lockscreen.sh"
+	link_item "Custom lock-screen script for i3wm"       ~/.config/i3/my-lockscreen.sh      "tools/my-i3-lockscreen.sh"
 	link_item "Custom lock-screen image for i3wm"        ~/.config/i3/lockscreen-center.png "pictures/lockscreen-center.png"
 fi
 
@@ -255,16 +130,47 @@ link_item "NPM configuration"          ~/.npmrc                           "dotfi
 link_item "NeoVim configuration"       ~/.config/nvim/init.vim            "dotfiles/init.vim"
 link_item "Alacritty configuration"    ~/.config/alacritty/alacritty.toml "dotfiles/alacritty.toml"
 
-source "$PRIVATE_CONFIGS_PATH/setup/link_items.sh"
 
-if `is_osx` ; then
-	defaults write -g com.apple.swipescrolldirection -bool FALSE
-	defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$PWD/dotfiles"
-	defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
-
-	python "$PWD/scripts/gen_karabiner_config.py"
-	link_item "Karabiner-Elements configuration" ~/.config/karabiner/karabiner.json "dotfiles/karabiner.json"
+if `is_work_machine` ; then
+	source "$WORK_CONFIGS_PATH/setup/link_items.sh"
 fi
 
-title "Install vim-plug"
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if `is_osx` ; then
+	title "Setting up Mac OS"
+
+	list_item "Fixing scroll direction"
+	defaults write -g com.apple.swipescrolldirection -bool FALSE
+
+	list_item "Registering ITerm2 dotfile"
+	defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$PUBLIC_CONFIGS_PATH/dotfiles"
+	defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
+
+	list_item "Generating Karabiner-Elements configuration"
+	uv run "$PUBLIC_CONFIGS_PATH/tools/gen_karabiner_config.py" "$HOME/.config/karabiner/karabiner.json"
+fi
+
+
+echo ""
+title "Setting up IDE"
+
+echo -n " - " ; uv tool install "debugpy>=1.8.1,<2" --python 3.13 # For nvim DAP plugin (nvim-dap-python ; https://github.com/microsoft/debugpy)
+echo -n " - " ; uv tool install --python 3.13 "pynvim"
+echo -n " - " ; uv tool install --python 3.13 "python-lsp-server[rope]>=1.12.2" `# https://github.com/python-lsp/python-lsp-server` \
+	--with "pylsp-rope>=0.1.17" `# https://github.com/python-rope/pylsp-rope` \
+	--with "pylsp-mypy>=0.7.0" `# https://github.com/Richardk2n/pylsp-mypy` \
+	--with "python-lsp-ruff>=2.2.2" `# https://github.com/python-lsp/python-lsp-ruff`
+echo -n " - " ; uv tool install --python 3.13 "git+https://github.com/TalAmuyal/tmux-ggg"
+rm -rf "$PUBLIC_CONFIGS_PATH/tools/*/build" "$PUBLIC_CONFIGS_PATH/tools/*/*.egg-info/"
+if `is_personal_machine` ; then
+	echo -n " - " ; ggg add --exist-ok "$WORKSPACE_DIR_PATH"
+fi
+
+echo -n " - " ; mise install node@lts
+
+VIM_PLUG_LOCATION="$HOME/.local/share/nvim/site/autoload/plug.vim"
+if [[ -f "$VIM_PLUG_LOCATION" ]]; then
+	list_item "Vim Plug already installed"
+else
+	list_item "Installing vim-plug"
+	curl -fLo "$VIM_PLUG_LOCATION" --create-dirs "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+fi

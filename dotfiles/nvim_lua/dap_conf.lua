@@ -1,9 +1,7 @@
 local util = require("util")
 
-local home_directory = vim.fn.expand("~")
-local python_path = home_directory .. "/.local/python_venvs/debugpy/bin/python"
-if not vim.fn.executable(python_path) then return end
-
+local python_path = util.get_shebang("debugpy")
+if not vim.fn.executable(python_path) then error("Not an executable: " .. python_path) end
 
 local dap = require("dap")
 

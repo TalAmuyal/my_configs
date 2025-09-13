@@ -1,2 +1,0 @@
-# For nvim DAP plugin (nvim-dap-python)
-debugpy>=1.8.1,<1.9 # https://github.com/microsoft/debugpy

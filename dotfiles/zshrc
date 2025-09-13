@@ -135,7 +135,7 @@ alias ncdu="ncdu --color dark -rr -x"
 if hash eza 2>/dev/null; then
 	alias ls='eza'
 	alias ll='eza -l'
-	alias la='eza -la'
+	alias tree='eza --tree'
 else
 	if isOsx ; then
 		alias ll="ls -lAFhtr"
@@ -169,6 +169,8 @@ export VISUAL=nvim
 export EDITOR="$VISUAL"
 
 export PIP_REQUIRE_VIRTUALENV=true
+
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 emulate sh -c 'source ~/.profile'
 
