@@ -1,6 +1,15 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#    "typer",
+# ]
+# ///
+
 import dataclasses
 import json
 import pathlib
+
+import typer
 
 
 OPTION_KEYS = (
@@ -297,9 +306,17 @@ config = {
     "profiles": [profile],
 }
 
-dumped_config = json.dumps(config, sort_keys=False, indent=4)
 
-current_dir = pathlib.Path(__file__).parent.resolve()
-dotfile_dir = current_dir.parent / "dotfiles"
-dotfile_path = dotfile_dir / "karabiner.json"
-dotfile_path.write_text(dumped_config)
+def main(
+    output_file_path: pathlib.Path,
+) -> None:
+    if not (parent_dir := output_file_path.parent).exists():
+        parent_dir.mkdir(parents=True, exist_ok=True)
+
+    dumped_config = json.dumps(config, sort_keys=False, indent=4).strip()
+
+    if not output_file_path.exists() or output_file_path.read_text().strip() != dumped_config:
+        output_file_path.write_text(dumped_config)
+
+if __name__ == "__main__":
+    typer.run(main)
