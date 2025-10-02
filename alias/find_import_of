@@ -1,0 +1,223 @@
+#!python
+
+"""
+Used to find imports in Python projects and filter them based on various criteria.
+
+Usage example:
+- `python find_imports_of.py pandas .` will find all imports of `pandas` in the current directory and its subdirectories.
+- `python find_imports_of.py package.module` will find all imports of `package.module` in the current directory and its subdirectories.
+"""
+
+import ast
+import dataclasses
+import os
+import pathlib
+import sys
+
+
+CWD = pathlib.Path.cwd().resolve()
+
+
+@dataclasses.dataclass(frozen=True)
+class Args:
+    """
+    Represents command line arguments for the script.
+    """
+    search_targer: str
+    search_root: pathlib.Path
+    verbose: bool
+
+
+def main() -> None:
+    args = parse_args()
+    python_files = set()
+
+    for root, _, files in os.walk(args.search_root):
+        root_path = pathlib.Path(root)
+        for file in files:
+            if not file.endswith(".py"):
+                continue
+            path = root_path / file
+            if any(part.startswith(".") for part in path.parts):
+                continue
+            if "{" in str(path):
+                continue
+            python_files.add(path)
+
+    for py_file in sorted(python_files):
+        if args.verbose:
+            print(f"Processing: {py_file}")
+        file_imports = find_imports(py_file)
+        for imp in file_imports:
+            module = imp.get("module") or guess_module(py_file)
+            module_options = [module]
+            if name := imp.get("name"):
+                module_options.append(module + "." + name)
+
+            if args.search_targer in module_options:
+                handle(imp, py_file)
+
+
+def guess_module(file_path: pathlib.Path) -> str:
+    """
+    Guesses the module name from the file path.
+    Assumes the file is in a package structure.
+
+    For example, given `frdstr_analytica/frdstr/analytica/address.py`, it returns `frdstr.analytica.address`.
+    """
+    parts = file_path.parts
+    if len(parts) < 2:
+        return ""
+
+    # The first part is the project directory, which we can ignore
+    parts = parts[1:]
+
+    if parts[-1] == "__init__.py":
+        # If the last part is __init__.py, it can be ignored
+        parts = parts[:-1]
+
+    # Assuming the last part is the file name without extension
+    return ".".join(parts[:-1]) + "." + parts[-1].rsplit(".", 1)[0]
+
+
+def handle(imp: dict, file_path: pathlib.Path) -> None:
+    relative_path = file_path.relative_to(CWD)
+    print(f"{relative_path}:{imp['line']}")
+
+
+def parse_args() -> Args:
+    """
+    Parses command line arguments and returns an Args object.
+    """
+    search_target = None
+    search_root = None
+    verbose = False
+
+    for arg in sys.argv[1:]:
+        if arg in ("-v", "--verbose"):
+            verbose = True
+        elif arg in ("-h", "--help"):
+            print_help(exit_code=0)
+        elif search_target is None:
+            search_target = arg
+        elif search_root is None:
+            search_root = pathlib.Path(arg)
+        else:
+            print(f"Unknown argument: {arg}")
+            print_help(exit_code=1)
+
+    if search_target is None:
+        print("Error: No search target specified.")
+        print_help(exit_code=1)
+
+    if search_root is None:
+        search_root = pathlib.Path(".")
+    search_root = search_root.resolve()
+    if not search_root.exists():
+        print(f"Error: {search_root} does not exist.")
+        sys.exit(1)
+    if not search_root.is_dir():
+        print(f"Error: {search_root} is not a valid directory.")
+        sys.exit(1)
+
+    return Args(
+        search_targer=search_target,
+        search_root=search_root,
+        verbose=verbose,
+    )
+
+
+def print_help(
+    exit_code: int,
+) -> None:
+    """
+    Prints the help message for the script.
+    """
+    print("Usage: find_imports_of <search_target> [search_root] [options]")
+    print("Searches for imports of <search_target> in Python files under [search_root] (default: \".\")")
+    print("Options:")
+    print("  --verbose: Enable verbose output")
+
+    if exit_code is not None:
+        sys.exit(exit_code)
+
+
+def find_imports(file_path: pathlib.Path) -> list[dict]:
+    """
+    Finds all import statements in a given Python file.
+    Returns a list of dictionaries, each representing an import.
+    """
+    imports = []
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            tree = ast.parse(f.read(), filename=file_path)
+    except UnicodeDecodeError as e:
+        print(f"Could not decode {file_path} with utf-8 encoding.")
+        sys.exit(1)
+    except FileNotFoundError:
+        print(f"File not found: {file_path}")
+        sys.exit(1)
+
+    try:
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    imports.append({
+                        "type": "import",
+                        "module": alias.name,
+                        "name": None,  # For 'import module' there's no specific 'name'
+                        "alias": alias.asname,
+                        "line": node.lineno
+                    })
+            elif isinstance(node, ast.ImportFrom):
+                module = node.module
+                for alias in node.names:
+                    imports.append({
+                        "type": "from_import",
+                        "module": module,
+                        "name": alias.name,
+                        "alias": alias.asname,
+                        "line": node.lineno
+                    })
+    except SyntaxError as e:
+        print(f"Error parsing {file_path}: {e}")
+        sys.exit(1)
+
+    return imports
+
+def filter_imports(imports, filter_criteria):
+    """
+    Filters a list of imports based on various criteria.
+    filter_criteria can be a dictionary like:
+    {
+        "module_startswith": "django",
+        "name_equals": "path",
+        "exclude_stdlib": True
+    }
+    """
+    filtered = []
+    for imp in imports:
+        match = True
+
+        if "module_startswith" in filter_criteria and imp["module"] and \
+           not imp["module"].startswith(filter_criteria["module_startswith"]):
+            match = False
+
+        if "name_equals" in filter_criteria and imp["name"] and \
+           imp["name"] != filter_criteria["name_equals"]:
+            match = False
+
+        if "exclude_stdlib" in filter_criteria and filter_criteria["exclude_stdlib"]:
+            # A simple way to exclude stdlib - needs a more robust check for production
+            # You might use a list of common stdlib modules or a more sophisticated approach
+            if imp["module"] and (imp["module"].startswith("os") or \
+                                 imp["module"].startswith("sys") or \
+                                 imp["module"].startswith("collections")):
+                match = False
+
+        if match:
+            filtered.append(imp)
+    return filtered
+
+if __name__ == "__main__":
+    main()
